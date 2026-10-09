@@ -1,12 +1,12 @@
 <header class="border-b border-black bg-[#f3e5df]">
     <nav class="mx-auto flex min-h-14 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8" aria-label="Main navigation">
-        <a href="{{ route('home') }}" class="flex items-center gap-2 text-lg font-bold text-black" aria-label="Kembang Hijab home">
-            <span aria-hidden="true">+</span><span>KEMBANG HIJAB</span>
+        <a href="{{ route('home') }}" class="flex items-center gap-2 text-lg font-bold text-black" aria-label="Kembang Books home">
+            <span aria-hidden="true">+</span><span>KEMBANG BOOKS</span>
         </a>
 
         <div class="hidden items-center gap-6 text-sm font-bold uppercase lg:flex">
             <a href="{{ route('home') }}" class="hover:underline">Home</a>
-            <a href=""{{ route('about') }}" class="hover:underline">About</a>
+            <a href="{{ route('about') }}" class="hover:underline">About</a>
             <a href="{{ route('products.index') }}" class="hover:underline">Shop</a>
             <a href="{{ route('categories.index') }}" class="hover:underline">Categories</a>
             <a href="{{ route('reviews.index') }}" class="hover:underline">Reviews</a>

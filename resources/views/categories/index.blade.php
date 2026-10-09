@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
-@section('title', 'Shop by category — Kembang Hijab')
-@section('meta_description', 'Explore Kembang Hijab collections by material and silhouette.')
+@section('title', 'Shop by genre — Kembang Books')
+@section('meta_description', 'Explore Kembang Books by genre and subject.')
 
 @section('content')
     <section class="mx-auto max-w-7xl px-6 pb-24 pt-16 lg:px-8 lg:pt-24">

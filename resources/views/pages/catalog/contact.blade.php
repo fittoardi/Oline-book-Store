@@ -1,35 +1,8 @@
 @extends('layouts.app')
 
-@section('title', 'Contact — Kembang Hijab')
+@section('title', 'Contact — Kembang Books')
+@section('meta_description', 'Contact the Kembang Books team about titles, orders, and delivery.')
 
 @section('content')
-    <section class="mx-auto max-w-7xl px-6 pb-24 pt-16 lg:px-8 lg:pt-24">
-        <div class="grid gap-12 lg:grid-cols-[.85fr_1.15fr]">
-            <div>
-                <p class="text-xs font-semibold uppercase tracking-[.3em] text-[#b99a62]">We are here for you</p>
-                <h1 class="mt-4 text-5xl font-semibold leading-[1.05] tracking-[-.05em] text-[#493b36] sm:text-6xl">Let’s talk, <span class="font-serif italic font-normal text-[#a17e69]">bloomer.</span></h1>
-                <p class="mt-7 max-w-md leading-8 text-[#6f5146]/70">Punya pertanyaan tentang produk, ukuran, atau pesananmu? Tim Kembang siap membantu.</p>
-                <div class="mt-10 space-y-5">
-                    <a href="https://wa.me/6281234567890" class="flex items-center gap-4 text-sm text-[#6f5146] transition hover:text-[#b99a62]"><span class="flex h-11 w-11 items-center justify-center rounded-full bg-[#e8cfcf] text-lg">◌</span><span><strong class="block text-[#493b36]">WhatsApp</strong><span class="text-[#6f5146]/60">Chat with our team</span></span></a>
-                    <a href="mailto:hello@kembanghijab.com" class="flex items-center gap-4 text-sm text-[#6f5146] transition hover:text-[#b99a62]"><span class="flex h-11 w-11 items-center justify-center rounded-full bg-[#e9ded2] text-lg">✉</span><span><strong class="block text-[#493b36]">Email</strong><span class="text-[#6f5146]/60">hello@kembanghijab.com</span></span></a>
-                    <div class="flex items-center gap-4 text-sm text-[#6f5146]"><span class="flex h-11 w-11 items-center justify-center rounded-full bg-[#d8cde0] text-lg">⌖</span><span><strong class="block text-[#493b36]">Studio hours</strong><span class="text-[#6f5146]/60">Mon–Sat, 09:00–17:00 WIB</span></span></div>
-                </div>
-            </div>
-            <form class="kh-glass rounded-[2.5rem] p-7 sm:p-10" action="{{ route('contact.submit') }}" method="POST">
-                @csrf
-                <h2 class="text-2xl font-semibold text-[#493b36]">Send us a note</h2>
-                <p class="mt-2 text-sm text-[#6f5146]/60">We usually reply within one business day.</p>
-                @if (session('status'))
-                    <div class="mt-5 rounded-2xl bg-[#e8cfcf]/60 px-4 py-3 text-sm text-[#6f5146]">{{ session('status') }}</div>
-                @endif
-                <div class="mt-7 grid gap-5 sm:grid-cols-2">
-                    <label class="text-sm font-medium text-[#493b36]">Name<input class="kh-input mt-2" type="text" name="name" placeholder="Your name"></label>
-                    <label class="text-sm font-medium text-[#493b36]">Email<input class="kh-input mt-2" type="email" name="email" placeholder="you@example.com"></label>
-                </div>
-                <label class="mt-5 block text-sm font-medium text-[#493b36]">Subject<input class="kh-input mt-2" type="text" name="subject" placeholder="How can we help?"></label>
-                <label class="mt-5 block text-sm font-medium text-[#493b36]">Message<textarea class="kh-input mt-2 min-h-36 resize-y" name="message" placeholder="Tell us a little more..."></textarea></label>
-                <button class="kh-btn kh-btn-primary mt-6 w-full sm:w-auto" type="submit">Send message ↗</button>
-            </form>
-        </div>
-    </section>
+    <section class="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8 lg:py-20"><div class="grid gap-8 lg:grid-cols-[.8fr_1.2fr]"><div class="arcade-checkerboard flex min-h-[520px] flex-col justify-between border border-black p-5 sm:p-8"><div class="flex items-start justify-between"><span class="arcade-tag bg-[#f3e5df]">CONTACT / 01</span><span class="text-sm text-white">+</span></div><div class="border border-black bg-[#f3e5df] p-6 sm:p-8"><p class="text-xs font-bold uppercase text-[#faa21f]">Kembang Books</p><h1 class="mt-4 text-4xl font-bold uppercase leading-tight sm:text-5xl">Let us talk books.</h1><p class="mt-5 text-sm leading-7 text-[#333333]">Cari judul tertentu, butuh rekomendasi, atau ingin tahu status order? Tim kami siap membantu.</p></div><div class="flex justify-between text-xs font-bold uppercase text-white"><span>MON - SAT / 09:00 - 17:00</span><span>WIB</span></div></div><div class="border border-black bg-[#f3e5df] p-6 sm:p-10"><div class="flex items-end justify-between gap-4 border-b border-black pb-5"><div><p class="text-xs font-bold uppercase text-[#faa21f]">Direct line</p><h2 class="mt-2 text-2xl font-bold uppercase">Send us a note</h2></div><span class="text-2xl">↗</span></div>@if(session('status'))<div class="mt-5 border border-black bg-[#faa21f] px-4 py-3 text-sm">{{ session('status') }}</div>@endif<form class="mt-7" action="{{ route('contact.submit') }}" method="POST">@csrf<div class="grid gap-5 sm:grid-cols-2"><label class="text-sm">Name<input class="mt-2 w-full border border-black bg-[#f3e5df] px-3 py-3" type="text" name="name" value="{{ old('name') }}" required></label><label class="text-sm">Email<input class="mt-2 w-full border border-black bg-[#f3e5df] px-3 py-3" type="email" name="email" value="{{ old('email') }}" required></label></div><label class="mt-5 block text-sm">Subject<input class="mt-2 w-full border border-black bg-[#f3e5df] px-3 py-3" type="text" name="subject" value="{{ old('subject') }}" required></label><label class="mt-5 block text-sm">Message<textarea class="mt-2 min-h-36 w-full resize-y border border-black bg-[#f3e5df] px-3 py-3" name="message" required>{{ old('message') }}</textarea></label><button class="arcade-button arcade-button-primary mt-6 w-full uppercase sm:w-auto" type="submit">Send message ↗</button></form><div class="mt-8 grid gap-3 border-t border-[#e5e7eb] pt-6 text-sm sm:grid-cols-2"><a href="mailto:hello@kembangbooks.test" class="arcade-button arcade-button-ghost">Email ↗</a><a href="{{ route('chat.index') }}" class="arcade-button arcade-button-ghost">Customer care ↗</a></div></div></div></section>
 @endsection

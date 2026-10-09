@@ -3,23 +3,22 @@
 namespace Database\Factories;
 
 use App\Models\Product;
+use App\Models\ProductVariant;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<\App\Models\ProductVariant>
+ * @extends Factory<ProductVariant>
  */
 class ProductVariantFactory extends Factory
 {
     public function definition(): array
     {
-        $color = fake()->randomElement(['Black', 'Cream', 'Brown', 'Dusty Pink', 'Mauve']);
-        $size = fake()->randomElement(['110 x 110', '115 x 115']);
+        $format = fake()->randomElement(['paperback', 'hardcover', 'gift_edition']);
 
         return [
             'product_id' => Product::factory(),
-            'sku' => 'KH-'.fake()->unique()->bothify('???###'),
-            'color' => $color,
-            'size' => $size,
+            'sku' => 'KB-'.fake()->unique()->bothify('???###'),
+            'format' => $format,
             'stock' => fake()->numberBetween(0, 50),
             'reserved_stock' => 0,
             'price' => null,

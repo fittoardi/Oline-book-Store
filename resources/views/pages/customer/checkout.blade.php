@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Checkout — Kembang Hijab')
+@section('title', 'Checkout — Kembang Books')
 
 @section('content')
     <section class="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">

@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
-@section('title', 'Reviews — Kembang Hijab')
-@section('meta_description', 'Read what the Kembang Hijab community says about their everyday pieces.')
+@section('title', 'Reviews — Kembang Books')
+@section('meta_description', 'Read what the Kembang Books community says about their latest reads.')
 
 @section('content')
     <section class="mx-auto max-w-7xl px-6 pb-24 pt-16 lg:px-8 lg:pt-24">

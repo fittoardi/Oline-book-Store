@@ -15,12 +15,12 @@
     >
 
     <title>
-        @yield('title', 'Kembang Hijab')
+        @yield('title', config('storefront.brand.name', 'Kembang Books'))
     </title>
 
     <meta
         name="description"
-        content="@yield('meta_description', 'Kembang Hijab — Elegant hijab for your everyday look.')"
+        content="@yield('meta_description', config('storefront.brand.tagline'))"
     >
 
     @vite([

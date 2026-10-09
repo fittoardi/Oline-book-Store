@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
-#[Fillable(['category_id', 'name', 'slug', 'description', 'material', 'price', 'discount_price', 'is_active', 'is_featured', 'is_new', 'views_count'])]
+#[Fillable(['category_id', 'name', 'slug', 'author', 'isbn', 'publisher', 'page_count', 'language', 'description', 'price', 'compare_price', 'is_active', 'is_featured', 'is_new', 'views_count'])]
 class Product extends Model
 {
     use HasFactory;
@@ -18,7 +18,7 @@ class Product extends Model
     {
         return [
             'price' => 'decimal:2',
-            'discount_price' => 'decimal:2',
+            'compare_price' => 'decimal:2',
             'is_active' => 'boolean',
             'is_featured' => 'boolean',
             'is_new' => 'boolean',

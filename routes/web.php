@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\StorefrontController;
 use Illuminate\Support\Facades\Route;
 
@@ -32,5 +33,8 @@ Route::get('/orders/{number}/payment', [StorefrontController::class, 'payment'])
 Route::get('/addresses', [StorefrontController::class, 'addresses'])->name('addresses.index');
 Route::post('/addresses', [StorefrontController::class, 'storeAddress'])->name('addresses.store');
 Route::view('/help', 'pages.customer.help')->name('help.index');
-Route::view('/login', 'auth.login')->name('login');
-Route::view('/register', 'auth.register')->name('register');
+Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+Route::post('/login', [AuthController::class, 'login'])->name('login.store');
+Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
+Route::post('/register', [AuthController::class, 'register'])->name('register.store');
+Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');

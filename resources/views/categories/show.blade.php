@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', $category['name'].' collection — Kembang Hijab')
+@section('title', $category['name'].' books — Kembang Books')
 
 @section('content')
     <section class="mx-auto max-w-7xl px-6 pb-24 pt-16 lg:px-8 lg:pt-24">

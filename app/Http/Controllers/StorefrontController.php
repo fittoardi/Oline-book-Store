@@ -81,7 +81,7 @@ class StorefrontController extends Controller
             'message' => ['required', 'string', 'max:1000'],
         ]);
 
-        return to_route('chat.index')->with('status', 'Pesanmu sudah diterima. Tim Kembang akan segera membalas.');
+        return to_route('chat.index')->with('status', 'Your message is in. The Kembang Books team will reply soon.');
     }
 
     public function reviews()
@@ -294,7 +294,7 @@ class StorefrontController extends Controller
             'message' => ['required', 'string', 'max:2000'],
         ]);
 
-        return to_route('contact')->with('status', 'Pesanmu sudah terkirim. Kami akan segera menghubungimu.');
+        return to_route('contact')->with('status', 'Your message has been sent. We will get back to you soon.');
     }
 
     private function products(): array

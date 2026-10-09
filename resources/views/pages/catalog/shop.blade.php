@@ -1,17 +1,17 @@
 @extends('layouts.app')
 
-@section('title', 'Shop — Kembang Hijab')
-@section('meta_description', 'Shop Kembang Hijab everyday pieces by category, price, and availability.')
+@section('title', 'Shop — Kembang Books')
+@section('meta_description', 'Shop Kembang Books by genre, price, and availability.')
 
 @section('content')
     <section class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         <div class="flex flex-col gap-5 border-b border-black pb-8 sm:flex-row sm:items-end sm:justify-between">
             <div>
-                <p class="text-xs font-bold uppercase tracking-[.2em] text-[#faa21f]">The collection</p>
-                <h1 class="mt-3 text-4xl font-bold uppercase leading-tight text-black sm:text-5xl">Find your everyday favourite.</h1>
-                <p class="mt-3 max-w-xl text-sm text-[#737373]">{{ $products->count() }} pieces designed to move with you.</p>
+                <p class="text-xs font-bold uppercase tracking-[.2em] text-[#faa21f]">The bookshelf</p>
+                <h1 class="mt-3 text-4xl font-bold uppercase leading-tight text-black sm:text-5xl">Find your next favourite.</h1>
+                <p class="mt-3 max-w-xl text-sm text-[#737373]">{{ $products->count() }} books for curious minds.</p>
             </div>
-            <a href="{{ route('categories.index') }}" class="arcade-button arcade-button-ghost self-start sm:self-auto">Browse categories</a>
+            <a href="{{ route('categories.index') }}" class="arcade-button arcade-button-ghost self-start sm:self-auto">Browse genres</a>
         </div>
 
         <form method="GET" action="{{ route('products.index') }}" class="mt-8 grid gap-3 border-b border-[#e5e7eb] pb-8 md:grid-cols-[1.5fr_1fr_1fr_auto]">
