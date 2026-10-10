@@ -15,12 +15,12 @@
     >
 
     <title>
-        @yield('title', config('storefront.brand.name', 'Kembang Books'))
+        @yield('title', config('storefront.brand.name'))
     </title>
 
     <meta
         name="description"
-        content="@yield('meta_description', config('storefront.brand.tagline'))"
+        content="@yield('meta_description', 'Stories for every state of mind.')
     >
 
     @vite([
@@ -35,7 +35,7 @@
 
     {{-- Announcement Bar --}}
     <div class="border-b border-black bg-[#faa21f] px-4 py-2 text-center text-sm text-black">
-        KIN. STORE. COUPONS. &nbsp; Free shipping over Rp300.000
+        {{ config('storefront.home.announcement') }} &nbsp; Free shipping over Rp{{ number_format(config('storefront.shipping.free_threshold'), 0, ',', '.') }}
     </div>
 
     {{-- Navbar --}}

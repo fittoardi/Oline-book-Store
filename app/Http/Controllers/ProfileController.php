@@ -2,21 +2,28 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Address;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ProfileController extends Controller
 {
     public function profile(Request $request)
     {
+        $user = Auth::user();
+
         return view('pages.customer.profile', [
-            'orders' => $request->session()->get('orders', []),
-            'wishlistCount' => count($request->session()->get('wishlist', [])),
+            'user' => $user,
+            'orders' => $user->orders()->count(),
+            'wishlistCount' => $user->wishlist?->items()->count() ?? 0,
         ]);
     }
 
     public function addresses(Request $request)
     {
-        return view('pages.customer.addresses', ['addresses' => $request->session()->get('addresses', [])]);
+        return view('pages.customer.addresses', [
+            'addresses' => Auth::user()->addresses()->orderByDesc('is_default')->get(),
+        ]);
     }
 
     public function storeAddress(Request $request)
@@ -29,9 +36,19 @@ class ProfileController extends Controller
             'city' => ['required', 'string', 'max:80'],
             'postal_code' => ['required', 'digits:5'],
         ]);
-        $addresses = $request->session()->get('addresses', []);
-        $addresses[] = $address;
-        $request->session()->put('addresses', $addresses);
+
+        Address::create([
+            'user_id' => Auth::id(),
+            'label' => $address['label'],
+            'recipient_name' => $address['recipient_name'],
+            'phone' => $address['phone'],
+            'province' => 'DKI Jakarta',
+            'city' => $address['city'],
+            'district' => '-',
+            'postal_code' => $address['postal_code'],
+            'full_address' => $address['address'],
+            'is_default' => Auth::user()->addresses()->count() === 0,
+        ]);
 
         return to_route('addresses.index')->with('status', 'Address saved.');
     }

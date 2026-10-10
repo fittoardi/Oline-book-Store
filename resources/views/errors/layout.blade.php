@@ -4,8 +4,8 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>@yield('title', 'Something went wrong') — {{ config('storefront.brand.name', 'Kembang Books') }}</title>
-    <meta name="description" content="{{ config('storefront.brand.name', 'Kembang Books') }} error page">
+    <title>@yield('title', 'Something went wrong') — {{ config('storefront.brand.name') }}</title>
+    <meta name="description" content="{{ config('storefront.brand.name') }} error page">
 
     @vite([
         'resources/css/app.css',

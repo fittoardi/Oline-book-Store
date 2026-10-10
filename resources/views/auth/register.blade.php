@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Register — Kembang Books')
+@section('title', 'Register — '.config('storefront.brand.name'))
 @section('meta_description', 'Create a Kembang Books customer account.')
 
 @section('content')

@@ -2,35 +2,67 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product;
+use App\Models\Wishlist;
+use App\Models\WishlistItem;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class WishlistController extends Controller
 {
     public function wishlist(Request $request)
     {
-        $slugs = $request->session()->get('wishlist', []);
+        $wishlist = $this->resolveWishlist($request);
+        $products = collect();
 
-        return view('pages.customer.wishlist', [
-            'products' => collect($this->products())->whereIn('slug', $slugs)->values(),
-        ]);
+        if ($wishlist) {
+            $products = Product::query()
+                ->with(['primaryImage', 'category'])
+                ->whereIn('id', $wishlist->items()->pluck('product_id'))
+                ->where('is_active', true)
+                ->latest()
+                ->get();
+        }
+
+        return view('pages.customer.wishlist', ['products' => $products]);
     }
 
     public function toggleWishlist(Request $request)
     {
         $data = $request->validate(['slug' => ['required', 'string']]);
-        abort_unless(collect($this->products())->firstWhere('slug', $data['slug']), 404);
 
-        $wishlist = $request->session()->get('wishlist', []);
-        $wishlist = in_array($data['slug'], $wishlist, true)
-            ? array_values(array_diff($wishlist, [$data['slug']]))
-            : [...$wishlist, $data['slug']];
-        $request->session()->put('wishlist', $wishlist);
+        $product = Product::query()
+            ->where('slug', $data['slug'])
+            ->where('is_active', true)
+            ->firstOrFail();
 
-        return back()->with('status', in_array($data['slug'], $wishlist, true) ? 'Saved to wishlist.' : 'Removed from wishlist.');
+        $wishlist = $this->resolveWishlist($request);
+
+        $item = WishlistItem::query()
+            ->where('wishlist_id', $wishlist->id)
+            ->where('product_id', $product->id)
+            ->first();
+
+        if ($item) {
+            $item->delete();
+
+            return back()->with('status', 'Removed from wishlist.');
+        }
+
+        WishlistItem::create([
+            'wishlist_id' => $wishlist->id,
+            'product_id' => $product->id,
+        ]);
+
+        return back()->with('status', 'Saved to wishlist.');
     }
 
-    private function products(): array
+    private function resolveWishlist(Request $request): ?Wishlist
     {
-        return config('storefront.products', []);
+        if (! Auth::check()) {
+            return null;
+        }
+
+        return Wishlist::firstOrCreate(['user_id' => Auth::id()]);
     }
 }

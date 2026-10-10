@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
+use App\Models\Product;
+use App\Models\Review;
 use Illuminate\Http\Request;
 
 class CatalogController extends Controller
@@ -9,9 +12,23 @@ class CatalogController extends Controller
     public function home()
     {
         return view('pages.home', [
-            'products' => $this->products(),
-            'categories' => config('storefront.categories', []),
-            'reviews' => config('storefront.reviews', []),
+            'products' => Product::query()
+                ->with(['category', 'primaryImage'])
+                ->where('is_active', true)
+                ->latest()
+                ->take(4)
+                ->get(),
+            'categories' => Category::query()
+                ->withCount(['products' => fn ($q) => $q->where('is_active', true)])
+                ->where('is_active', true)
+                ->orderBy('sort_order')
+                ->get(),
+            'reviews' => Review::query()
+                ->with(['user', 'product'])
+                ->where('is_approved', true)
+                ->latest()
+                ->take(3)
+                ->get(),
         ]);
     }
 
@@ -26,70 +43,126 @@ class CatalogController extends Controller
             'sort' => ['nullable', 'in:newest,oldest,price_asc,price_desc,popular,rating'],
         ]);
 
-        $products = collect($this->products())
-            ->when($filters['q'] ?? null, fn ($items, $query) => $items->filter(fn ($product) => str_contains(strtolower($product['name'].' '.$product['category']), strtolower($query))))
-            ->when($filters['category'] ?? null, fn ($items, $category) => $items->where('category', $category))
-            ->when(isset($filters['min_price']), fn ($items) => $items->where('price', '>=', $filters['min_price']))
-            ->when(isset($filters['max_price']), fn ($items) => $items->where('price', '<=', $filters['max_price']))
-            ->when(($filters['availability'] ?? null) === 'in_stock', fn ($items) => $items->filter(fn ($product) => ($product['stock'] ?? 12) > 0));
+        $products = Product::query()
+            ->with(['category', 'primaryImage'])
+            ->where('is_active', true)
+            ->when($filters['q'] ?? null, function ($query, $term) {
+                $query->where(function ($q) use ($term) {
+                    $q->where('name', 'like', '%'.$term.'%')
+                        ->orWhere('author', 'like', '%'.$term.'%')
+                        ->orWhere('description', 'like', '%'.$term.'%');
+                });
+            })
+            ->when($filters['category'] ?? null, function ($query, $name) {
+                $query->whereHas('category', fn ($q) => $q->where('name', $name));
+            })
+            ->when(isset($filters['min_price']), fn ($query) => $query->where('price', '>=', $filters['min_price']))
+            ->when(isset($filters['max_price']), fn ($query) => $query->where('price', '<=', $filters['max_price']))
+            ->when(($filters['availability'] ?? null) === 'in_stock', function ($query) {
+                $query->whereHas('variants', fn ($q) => $q->where('stock', '>', 0)->where('is_active', true));
+            });
 
         $products = match ($filters['sort'] ?? 'newest') {
-            'oldest' => $products->sortBy('id'),
-            'price_asc' => $products->sortBy('price'),
-            'price_desc' => $products->sortByDesc('price'),
-            'popular', 'rating' => $products->sortByDesc('rating'),
-            default => $products->sortByDesc('id'),
+            'oldest' => $products->oldest(),
+            'price_asc' => $products->orderBy('price'),
+            'price_desc' => $products->orderByDesc('price'),
+            'popular' => $products->orderByDesc('views_count'),
+            'rating' => $products->withAvg(['reviews' => fn ($q) => $q->where('is_approved', true)], 'rating')->orderByDesc('reviews_avg_rating'),
+            default => $products->latest(),
         };
 
         return view('pages.catalog.shop', [
-            'products' => $products->values(),
+            'products' => $products->paginate(12)->withQueryString(),
             'filters' => $filters,
-            'categories' => config('storefront.categories', []),
+            'categories' => Category::query()
+                ->where('is_active', true)
+                ->orderBy('sort_order')
+                ->get(),
         ]);
     }
 
     public function collection()
     {
-        return view('pages.catalog.collection', ['products' => $this->products()]);
+        return view('pages.catalog.collection', [
+            'products' => Product::query()
+                ->with(['category', 'primaryImage'])
+                ->where('is_active', true)
+                ->latest()
+                ->take(12)
+                ->get(),
+            'categories' => Category::query()
+                ->withCount(['products' => fn ($q) => $q->where('is_active', true)])
+                ->where('is_active', true)
+                ->orderBy('sort_order')
+                ->get(),
+        ]);
     }
 
     public function categories()
     {
-        return view('categories.index', ['categories' => config('storefront.categories', [])]);
+        return view('categories.index', [
+            'categories' => Category::query()
+                ->withCount(['products' => fn ($q) => $q->where('is_active', true)])
+                ->where('is_active', true)
+                ->orderBy('sort_order')
+                ->get(),
+        ]);
     }
 
     public function category(string $slug)
     {
-        $category = collect(config('storefront.categories', []))->firstWhere('slug', $slug);
-
-        abort_unless($category, 404);
+        $category = Category::query()
+            ->where('slug', $slug)
+            ->where('is_active', true)
+            ->firstOrFail();
 
         return view('categories.show', [
             'category' => $category,
-            'products' => collect($this->products())->where('category', $category['name']),
+            'products' => Product::query()
+                ->with(['primaryImage'])
+                ->where('category_id', $category->id)
+                ->where('is_active', true)
+                ->latest()
+                ->paginate(9),
         ]);
     }
 
     public function reviews()
     {
-        return view('reviews.index', ['reviews' => config('storefront.reviews', [])]);
+        return view('reviews.index', [
+            'reviews' => Review::query()
+                ->with(['user', 'product'])
+                ->where('is_approved', true)
+                ->latest()
+                ->paginate(9),
+        ]);
     }
 
     public function product(string $slug)
     {
-        $products = collect($this->products());
-        $product = $products->firstWhere('slug', $slug);
+        $product = Product::query()
+            ->with([
+                'category',
+                'images',
+                'variants' => fn ($q) => $q->where('is_active', true),
+                'reviews' => fn ($q) => $q->where('is_approved', true)->with('user')->latest(),
+            ])
+            ->where('slug', $slug)
+            ->where('is_active', true)
+            ->firstOrFail();
 
-        abort_unless($product, 404);
+        $relatedProducts = Product::query()
+            ->with(['primaryImage'])
+            ->where('category_id', $product->category_id)
+            ->where('id', '!=', $product->id)
+            ->where('is_active', true)
+            ->inRandomOrder()
+            ->take(3)
+            ->get();
 
         return view('pages.catalog.product-show', [
             'product' => $product,
-            'relatedProducts' => $products->where('id', '!=', $product['id'])->take(3),
+            'relatedProducts' => $relatedProducts,
         ]);
-    }
-
-    private function products(): array
-    {
-        return config('storefront.products', []);
     }
 }
