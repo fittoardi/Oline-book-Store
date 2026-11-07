@@ -409,3 +409,72 @@ test('buy now button directs customer directly to checkout', function () {
         ])
         ->assertRedirect('/checkout');
 });
+
+test('a customer can update their profile information', function () {
+    seedCatalog();
+
+    $user = User::where('email', 'nadia@example.com')->first();
+
+    $this->actingAs($user)
+        ->post('/profile', [
+            'name' => 'Nadia Rahmawati',
+            'phone' => '081299998888',
+        ])
+        ->assertRedirect();
+
+    expect($user->fresh()->name)->toBe('Nadia Rahmawati');
+    expect($user->fresh()->phone)->toBe('081299998888');
+});
+
+test('a customer can simulate and confirm payment on their order', function () {
+    seedCatalog();
+
+    $user = User::where('email', 'nadia@example.com')->first();
+
+    // Create an unpaid order
+    $order = Order::create([
+        'user_id' => $user->id,
+        'order_number' => 'KB-TEST-PAY-01',
+        'status' => 'pending',
+        'payment_status' => 'unpaid',
+        'shipping_status' => 'pending',
+        'subtotal' => 149000,
+        'discount_amount' => 0,
+        'shipping_cost' => 15000,
+        'total_amount' => 164000,
+    ]);
+
+    $payment = \App\Models\Payment::create([
+        'order_id' => $order->id,
+        'provider' => 'tripay',
+        'reference' => 'T-TEST-001',
+        'merchant_ref' => 'KB-'.$order->id,
+        'method' => 'Bank transfer',
+        'status' => 'unpaid',
+        'amount' => 164000,
+    ]);
+
+    $this->actingAs($user)
+        ->post("/orders/{$order->order_number}/payment/confirm")
+        ->assertRedirect("/orders/{$order->order_number}");
+
+    expect($order->fresh()->payment_status)->toBe('paid');
+    expect($order->fresh()->status)->toBe('processing');
+    expect($payment->fresh()->status)->toBe('paid');
+});
+
+test('the shop page filters books by price range', function () {
+    seedCatalog();
+
+    // The Quiet Atlas is 149,000
+    // Querying with min_price=160000 should return empty
+    $this->get('/shop?min_price=160000')
+        ->assertOk()
+        ->assertSee('No products match your filters.');
+
+    // Querying with max_price=150000 should return The Quiet Atlas
+    $this->get('/shop?max_price=150000')
+        ->assertOk()
+        ->assertSee('The Quiet Atlas');
+});
+
