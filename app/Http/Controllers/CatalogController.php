@@ -44,7 +44,8 @@ class CatalogController extends Controller
         ]);
 
         $products = Product::query()
-            ->with(['category', 'primaryImage'])
+            ->with(['category', 'primaryImage', 'variants'])
+            ->withAvg(['reviews' => fn ($q) => $q->where('is_approved', true)], 'rating')
             ->where('is_active', true)
             ->when($filters['q'] ?? null, function ($query, $term) {
                 $query->where(function ($q) use ($term) {
