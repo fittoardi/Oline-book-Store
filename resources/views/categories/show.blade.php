@@ -13,10 +13,10 @@
 
         <div class="mt-14 flex items-end justify-between gap-6">
             <div>
-                <p class="text-xs font-bold uppercase tracking-[.25em] text-[#737373]">{{ $products->total() }} pieces</p>
+                <p class="text-xs font-bold uppercase tracking-[.25em] text-[#737373]">{{ $products->total() }} titles</p>
                 <h2 class="mt-2 text-3xl font-bold uppercase tracking-tight text-black">Made for your rhythm</h2>
             </div>
-            <a href="{{ route('products.index') }}" class="hidden text-sm font-bold uppercase sm:block hover:underline">View all pieces ↗</a>
+            <a href="{{ route('products.index') }}" class="hidden text-sm font-bold uppercase sm:block hover:underline">View all titles ↗</a>
         </div>
 
         <div class="mt-8 grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
