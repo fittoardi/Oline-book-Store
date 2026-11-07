@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cart;
+use App\Models\CartItem;
 use App\Models\Product;
 use App\Models\Wishlist;
 use App\Models\WishlistItem;
@@ -17,7 +19,7 @@ class WishlistController extends Controller
 
         if ($wishlist) {
             $products = Product::query()
-                ->with(['primaryImage', 'category'])
+                ->with(['primaryImage', 'category', 'variants'])
                 ->whereIn('id', $wishlist->items()->pluck('product_id'))
                 ->where('is_active', true)
                 ->latest()
@@ -55,6 +57,51 @@ class WishlistController extends Controller
         ]);
 
         return back()->with('status', 'Saved to wishlist.');
+    }
+
+    public function moveToCart(Request $request, string $slug)
+    {
+        $product = Product::query()
+            ->where('slug', $slug)
+            ->where('is_active', true)
+            ->firstOrFail();
+
+        $variant = $product->variants()
+            ->where('is_active', true)
+            ->where('stock', '>', 0)
+            ->first() ?? $product->variants()->where('is_active', true)->first();
+
+        if (! $variant) {
+            return back()->withErrors(['cart' => 'Buku ini sedang tidak tersedia.']);
+        }
+
+        $cart = Cart::firstOrCreate(
+            ['user_id' => Auth::id(), 'status' => 'active'],
+            ['session_id' => $request->session()->getId()],
+        );
+
+        $cartItem = CartItem::firstOrNew([
+            'cart_id' => $cart->id,
+            'product_variant_id' => $variant->id,
+        ]);
+
+        $newQty = ($cartItem->quantity ?? 0) + 1;
+        if ($variant->availableStock() < $newQty) {
+            return back()->withErrors(['cart' => 'Stok buku ini tidak mencukupi untuk ditambahkan ke keranjang.']);
+        }
+
+        $cartItem->quantity = $newQty;
+        $cartItem->unit_price = $variant->price ?? $product->price;
+        $cartItem->save();
+
+        $wishlist = Wishlist::where('user_id', Auth::id())->first();
+        if ($wishlist) {
+            WishlistItem::where('wishlist_id', $wishlist->id)
+                ->where('product_id', $product->id)
+                ->delete();
+        }
+
+        return to_route('cart.index')->with('status', $product->name.' dipindahkan ke keranjang.');
     }
 
     private function resolveWishlist(Request $request): ?Wishlist

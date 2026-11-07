@@ -19,6 +19,27 @@ class ProfileController extends Controller
         ]);
     }
 
+    public function updateProfile(Request $request)
+    {
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:100'],
+            'phone' => ['required', 'string', 'max:30'],
+            'password' => ['nullable', 'confirmed', 'string', 'min:8'],
+        ]);
+
+        $user = Auth::user();
+        $user->name = $data['name'];
+        $user->phone = $data['phone'];
+
+        if (! empty($data['password'])) {
+            $user->password = $data['password'];
+        }
+
+        $user->save();
+
+        return back()->with('status', 'Profil berhasil diperbarui.');
+    }
+
     public function addresses(Request $request)
     {
         return view('pages.customer.addresses', [
@@ -51,5 +72,15 @@ class ProfileController extends Controller
         ]);
 
         return to_route('addresses.index')->with('status', 'Address saved.');
+    }
+
+    public function setDefaultAddress(Request $request, int $id)
+    {
+        $address = Auth::user()->addresses()->findOrFail($id);
+
+        Auth::user()->addresses()->update(['is_default' => false]);
+        $address->update(['is_default' => true]);
+
+        return back()->with('status', 'Alamat utama berhasil diperbarui.');
     }
 }

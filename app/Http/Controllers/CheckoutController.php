@@ -9,6 +9,7 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Payment;
 use App\Models\Shipment;
+use App\Models\Voucher;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -40,11 +41,31 @@ class CheckoutController extends Controller
             return to_route('cart.index');
         }
 
+        $subtotal = $this->subtotal($cart);
+        $shipping = $subtotal >= $this->freeShippingThreshold() ? 0 : $this->shippingCost();
+
+        $voucherCode = $request->session()->get('checkout_voucher');
+        $voucher = $voucherCode ? Voucher::where('code', $voucherCode)->first() : null;
+        $discount = 0;
+
+        if ($voucher && $voucher->isValid($subtotal)) {
+            $discount = (int) $voucher->calculateDiscount($subtotal);
+        } else {
+            $voucher = null;
+            $request->session()->forget('checkout_voucher');
+        }
+
+        $total = max(0, $subtotal - $discount + $shipping);
+
         return view('pages.customer.checkout', [
             'cart' => $cart,
             'items' => $cart->items()->with(['productVariant.product.primaryImage'])->get(),
-            'subtotal' => $this->subtotal($cart),
-            'shipping' => $this->shippingCost(),
+            'subtotal' => $subtotal,
+            'shipping' => $shipping,
+            'voucher' => $voucher,
+            'discount' => $discount,
+            'total' => $total,
+            'freeShippingThreshold' => $this->freeShippingThreshold(),
             'paymentChannels' => $this->paymentChannels(),
             'addresses' => Auth::check()
                 ? Auth::user()->addresses()->orderByDesc('is_default')->get()
@@ -52,13 +73,50 @@ class CheckoutController extends Controller
         ]);
     }
 
+    public function applyVoucher(Request $request)
+    {
+        $data = $request->validate([
+            'voucher_code' => ['required', 'string', 'max:50'],
+        ]);
+
+        $cart = $this->cart($request);
+        if (! $cart || $cart->items()->count() === 0) {
+            return to_route('cart.index');
+        }
+
+        $subtotal = $this->subtotal($cart);
+        $code = strtoupper(trim($data['voucher_code']));
+        $voucher = Voucher::where('code', $code)->first();
+
+        if (! $voucher) {
+            return back()->withErrors(['voucher' => 'Kode voucher "'.$code.'" tidak ditemukan.'])->withInput();
+        }
+
+        if ($reason = $voucher->invalidationReason($subtotal)) {
+            return back()->withErrors(['voucher' => $reason])->withInput();
+        }
+
+        $request->session()->put('checkout_voucher', $voucher->code);
+
+        return back()->with('status', 'Voucher '.$voucher->code.' berhasil diterapkan!');
+    }
+
+    public function removeVoucher(Request $request)
+    {
+        $request->session()->forget('checkout_voucher');
+
+        return back()->with('status', 'Voucher dilepas.');
+    }
+
     public function placeOrder(Request $request)
     {
         $data = $request->validate([
-            'name' => ['required', 'string', 'max:100'],
-            'phone' => ['required', 'string', 'max:30'],
-            'address' => ['required', 'string', 'max:500'],
+            'address_id' => ['nullable', 'integer', 'exists:addresses,id'],
+            'name' => ['required_without:address_id', 'nullable', 'string', 'max:100'],
+            'phone' => ['required_without:address_id', 'nullable', 'string', 'max:30'],
+            'address' => ['required_without:address_id', 'nullable', 'string', 'max:500'],
             'payment' => ['required', 'string', 'in:'.implode(',', $this->paymentChannels())],
+            'voucher_code' => ['nullable', 'string', 'max:50'],
         ]);
 
         $cart = $this->cart($request);
@@ -78,26 +136,47 @@ class CheckoutController extends Controller
         }
 
         $subtotal = $this->subtotal($cart);
-        $total = $subtotal + $this->shippingCost();
+
+        // Voucher discount calculation
+        $code = $data['voucher_code'] ?? $request->session()->get('checkout_voucher');
+        $voucher = $code ? Voucher::where('code', strtoupper(trim($code)))->first() : null;
+        $discount = 0;
+
+        if ($voucher && $voucher->isValid($subtotal)) {
+            $discount = (int) $voucher->calculateDiscount($subtotal);
+        } else {
+            $voucher = null;
+        }
+
+        $shipping = $subtotal >= $this->freeShippingThreshold() ? 0 : $this->shippingCost();
+        $total = max(0, $subtotal - $discount + $shipping);
         $paymentStatus = $data['payment'] === 'COD' ? 'unpaid' : 'pending';
         $orderStatus = $data['payment'] === 'COD' ? 'processing' : 'pending';
 
-        $order = DB::transaction(function () use ($data, $items, $cart, $subtotal, $total, $paymentStatus, $orderStatus) {
-            $defaultAddress = Auth::user()->addresses()->where('is_default', true)->first()
-                ?? Auth::user()->addresses()->first();
+        $order = DB::transaction(function () use ($data, $items, $cart, $subtotal, $discount, $shipping, $total, $voucher, $paymentStatus, $orderStatus) {
+            $address = null;
 
-            $address = Address::create([
-                'user_id' => Auth::id(),
-                'label' => 'Checkout',
-                'recipient_name' => $data['name'],
-                'phone' => $data['phone'],
-                'province' => $defaultAddress?->province ?? 'DKI Jakarta',
-                'city' => $defaultAddress?->city ?? 'Jakarta',
-                'district' => $defaultAddress?->district ?? '-',
-                'postal_code' => $defaultAddress?->postal_code ?? '00000',
-                'full_address' => $data['address'],
-                'is_default' => false,
-            ]);
+            if (! empty($data['address_id'])) {
+                $address = Auth::user()->addresses()->find($data['address_id']);
+            }
+
+            if (! $address) {
+                $defaultAddress = Auth::user()->addresses()->where('is_default', true)->first()
+                    ?? Auth::user()->addresses()->first();
+
+                $address = Address::create([
+                    'user_id' => Auth::id(),
+                    'label' => 'Checkout',
+                    'recipient_name' => $data['name'],
+                    'phone' => $data['phone'],
+                    'province' => $defaultAddress?->province ?? 'DKI Jakarta',
+                    'city' => $defaultAddress?->city ?? 'Jakarta',
+                    'district' => $defaultAddress?->district ?? '-',
+                    'postal_code' => $defaultAddress?->postal_code ?? '00000',
+                    'full_address' => $data['address'],
+                    'is_default' => false,
+                ]);
+            }
 
             $order = Order::create([
                 'user_id' => Auth::id(),
@@ -107,12 +186,16 @@ class CheckoutController extends Controller
                 'payment_status' => $paymentStatus,
                 'shipping_status' => 'pending',
                 'subtotal' => $subtotal,
-                'discount_amount' => 0,
-                'shipping_cost' => $this->shippingCost(),
+                'discount_amount' => $discount,
+                'shipping_cost' => $shipping,
                 'total_amount' => $total,
                 'shipping_courier' => explode(' / ', config('storefront.shipping.courier'))[0],
-                'notes' => null,
+                'notes' => $voucher ? 'Voucher: '.$voucher->code : null,
             ]);
+
+            if ($voucher) {
+                $voucher->increment('used_count');
+            }
 
             foreach ($items as $item) {
                 $variant = $item->productVariant;
@@ -145,7 +228,7 @@ class CheckoutController extends Controller
                 'order_id' => $order->id,
                 'courier' => explode(' / ', config('storefront.shipping.courier'))[0],
                 'service' => 'REG',
-                'shipping_cost' => $this->shippingCost(),
+                'shipping_cost' => $shipping,
                 'estimated_delivery' => now()->addDays(3)->toDateString(),
                 'status' => 'pending',
             ]);
@@ -155,6 +238,8 @@ class CheckoutController extends Controller
 
             return $order;
         });
+
+        $request->session()->forget('checkout_voucher');
 
         return to_route('orders.index')->with('status', 'Order '.$order->order_number.' has been created.');
     }

@@ -46,6 +46,22 @@ class User extends Authenticatable implements FilamentUser
         return $this->hasMany(Order::class);
     }
 
+    public function canReviewProduct(Product $product): bool
+    {
+        return $this->orders()
+            ->where('status', 'completed')
+            ->whereHas('items.productVariant', fn ($q) => $q->where('product_id', $product->id))
+            ->exists();
+    }
+
+    public function hasReviewedProduct(Product $product): bool
+    {
+        return Review::query()
+            ->where('user_id', $this->id)
+            ->where('product_id', $product->id)
+            ->exists();
+    }
+
     public function canAccessPanel(Panel $panel): bool
     {
         return $this->role === 'admin';

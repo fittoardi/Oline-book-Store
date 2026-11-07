@@ -10,7 +10,7 @@ class OrderController extends Controller
 {
     public function orders(Request $request)
     {
-        $orders = Auth::user()->orders()->with('items')->latest()->get();
+        $orders = Auth::user()->orders()->with(['items', 'payment', 'shipment'])->latest()->get();
 
         return view('pages.customer.orders', ['orders' => $orders]);
     }
@@ -27,6 +27,25 @@ class OrderController extends Controller
         $order = $this->findOrder($number);
 
         return view('pages.customer.payment', ['order' => $order]);
+    }
+
+    public function confirmPayment(Request $request, string $number)
+    {
+        $order = $this->findOrder($number);
+
+        if ($order->payment) {
+            $order->payment->update([
+                'status' => 'paid',
+                'paid_at' => now(),
+            ]);
+        }
+
+        $order->update([
+            'payment_status' => 'paid',
+            'status' => 'processing',
+        ]);
+
+        return to_route('orders.show', $order->order_number)->with('status', 'Pembayaran berhasil dikonfirmasi! Pesanan Anda sedang diproses.');
     }
 
     private function findOrder(string $number): Order

@@ -20,7 +20,7 @@
 
     <meta
         name="description"
-        content="@yield('meta_description', 'Stories for every state of mind.')
+        content="@yield('meta_description', 'Stories for every state of mind.')"
     >
 
     @vite([

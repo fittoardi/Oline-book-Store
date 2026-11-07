@@ -28,6 +28,7 @@ class CartController extends Controller
             'slug' => ['required', 'string'],
             'format' => ['nullable', 'string', 'in:paperback,hardcover,gift_edition'],
             'quantity' => ['required', 'integer', 'min:1', 'max:99'],
+            'buy_now' => ['nullable', 'boolean'],
         ]);
 
         $product = Product::query()
@@ -58,6 +59,10 @@ class CartController extends Controller
             ['cart_id' => $cart->id, 'product_variant_id' => $variant->id],
             ['quantity' => $newQuantity, 'unit_price' => $variant->price ?? $product->price],
         );
+
+        if ($request->boolean('buy_now')) {
+            return to_route('checkout.index');
+        }
 
         return to_route('cart.index')->with('status', $product->name.' added to cart.');
     }

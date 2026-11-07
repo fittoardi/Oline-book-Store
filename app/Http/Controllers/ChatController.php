@@ -11,7 +11,24 @@ class ChatController extends Controller
 {
     public function chat()
     {
-        return view('chat.index');
+        $conversation = null;
+        $messages = collect();
+
+        if (Auth::check()) {
+            $conversation = ChatConversation::where('user_id', Auth::id())
+                ->where('status', 'open')
+                ->latest()
+                ->first();
+
+            if ($conversation) {
+                $messages = $conversation->messages()->with('sender')->oldest()->get();
+            }
+        }
+
+        return view('chat.index', [
+            'conversation' => $conversation,
+            'messages' => $messages,
+        ]);
     }
 
     public function submitChat(Request $request)
@@ -35,6 +52,6 @@ class ChatController extends Controller
             $conversation->update(['last_message_at' => now()]);
         }
 
-        return to_route('chat.index')->with('status', 'Your message is in. The Kembang Books team will reply soon.');
+        return to_route('chat.index')->with('status', 'Pesan terkirim. Tim Kembang Books akan segera membalas.');
     }
 }

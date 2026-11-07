@@ -8,7 +8,7 @@
         $cartCount = \App\Models\CartItem::whereHas('cart', fn ($q) => $q->where('session_id', session()->getId())->where('status', 'active'))->sum('quantity');
     }
 @endphp
-<header class="border-b border-black bg-[#f3e5df]">
+<header class="border-b border-black bg-[#f3e5df]" x-data="{ open: false }">
     <nav class="mx-auto flex min-h-14 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8" aria-label="Main navigation">
         <a href="{{ route('home') }}" class="flex items-center gap-2 text-lg font-bold text-black" aria-label="{{ config('storefront.brand.name') }} home">
             <span aria-hidden="true">+</span><span>{{ strtoupper(config('storefront.brand.name')) }}</span>
@@ -19,6 +19,7 @@
             <a href="{{ route('about') }}" class="hover:underline">About</a>
             <a href="{{ route('products.index') }}" class="hover:underline">Shop</a>
             <a href="{{ route('categories.index') }}" class="hover:underline">Categories</a>
+            <a href="{{ route('collection.index') }}" class="hover:underline">Collections</a>
             <a href="{{ route('reviews.index') }}" class="hover:underline">Reviews</a>
             <a href="{{ route('chat.index') }}" class="hover:underline">Help</a>
         </div>
@@ -32,6 +33,7 @@
                 @if(auth()->user()->role === 'admin')
                     <a href="{{ url('/admin') }}" class="arcade-button arcade-button-ghost hidden md:inline-flex" aria-label="Admin panel">ADMIN</a>
                 @endif
+                <a href="{{ route('profile.index') }}" class="arcade-button arcade-button-ghost hidden md:inline-flex" aria-label="Profile">ACCOUNT</a>
                 <a href="{{ route('orders.index') }}" class="arcade-button arcade-button-ghost hidden md:inline-flex" aria-label="Orders">ORDERS</a>
                 <form method="POST" action="{{ route('logout') }}" class="hidden md:inline-flex">
                     @csrf
@@ -40,7 +42,37 @@
             @else
                 <a href="{{ route('login') }}" class="arcade-button arcade-button-ghost hidden md:inline-flex" aria-label="Account">LOGIN</a>
             @endauth
-            <button type="button" class="arcade-button arcade-button-ghost lg:hidden" aria-label="Open menu">|||</button>
+            <button type="button" @click="open = !open" :aria-expanded="open.toString()" class="arcade-button arcade-button-ghost lg:hidden" aria-label="Toggle navigation menu">|||</button>
         </div>
     </nav>
+
+    {{-- Mobile Navigation Menu --}}
+    <div x-show="open" x-cloak @click.away="open = false" class="border-t border-black bg-[#f3e5df] px-4 py-4 lg:hidden">
+        <div class="flex flex-col space-y-3 text-sm font-bold uppercase">
+            <a href="{{ route('home') }}" class="border-b border-[#e5e7eb] pb-2 hover:underline">Home</a>
+            <a href="{{ route('about') }}" class="border-b border-[#e5e7eb] pb-2 hover:underline">About</a>
+            <a href="{{ route('products.index') }}" class="border-b border-[#e5e7eb] pb-2 hover:underline">Shop All Books</a>
+            <a href="{{ route('categories.index') }}" class="border-b border-[#e5e7eb] pb-2 hover:underline">Genres</a>
+            <a href="{{ route('collection.index') }}" class="border-b border-[#e5e7eb] pb-2 hover:underline">Curated Collections</a>
+            <a href="{{ route('reviews.index') }}" class="border-b border-[#e5e7eb] pb-2 hover:underline">Reader Reviews</a>
+            <a href="{{ route('chat.index') }}" class="border-b border-[#e5e7eb] pb-2 hover:underline">Customer Care</a>
+            @auth
+                <a href="{{ route('wishlist.index') }}" class="border-b border-[#e5e7eb] pb-2 hover:underline">Wishlist</a>
+                <a href="{{ route('profile.index') }}" class="border-b border-[#e5e7eb] pb-2 hover:underline">My Profile</a>
+                <a href="{{ route('orders.index') }}" class="border-b border-[#e5e7eb] pb-2 hover:underline">Order History</a>
+                @if(auth()->user()->role === 'admin')
+                    <a href="{{ url('/admin') }}" class="border-b border-[#e5e7eb] pb-2 hover:underline text-[#faa21f]">Admin Panel</a>
+                @endif
+                <form method="POST" action="{{ route('logout') }}" class="pt-2">
+                    @csrf
+                    <button type="submit" class="arcade-button arcade-button-ghost w-full uppercase text-left">Logout</button>
+                </form>
+            @else
+                <div class="grid grid-cols-2 gap-2 pt-2">
+                    <a href="{{ route('login') }}" class="arcade-button arcade-button-ghost text-center">Login</a>
+                    <a href="{{ route('register') }}" class="arcade-button arcade-button-primary text-center">Register</a>
+                </div>
+            @endauth
+        </div>
+    </div>
 </header>

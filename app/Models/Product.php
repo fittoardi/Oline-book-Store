@@ -46,6 +46,21 @@ class Product extends Model
         return $this->hasMany(Review::class);
     }
 
+    public function approvedReviews(): HasMany
+    {
+        return $this->hasMany(Review::class)->where('is_approved', true);
+    }
+
+    public function averageRating(): float
+    {
+        return round((float) ($this->approvedReviews()->avg('rating') ?? 5.0), 1);
+    }
+
+    public function reviewCount(): int
+    {
+        return $this->approvedReviews()->count();
+    }
+
     public function primaryImage(): HasOne
     {
         return $this->hasOne(ProductImage::class)->where('is_primary', true);

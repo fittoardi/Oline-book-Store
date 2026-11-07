@@ -160,9 +160,56 @@ class CatalogController extends Controller
             ->take(3)
             ->get();
 
+        $canReview = false;
+        $hasReviewed = false;
+        if (auth()->check()) {
+            $user = auth()->user();
+            $canReview = $user->canReviewProduct($product);
+            $hasReviewed = $user->hasReviewedProduct($product);
+        }
+
         return view('pages.catalog.product-show', [
             'product' => $product,
             'relatedProducts' => $relatedProducts,
+            'canReview' => $canReview,
+            'hasReviewed' => $hasReviewed,
         ]);
+    }
+
+    public function storeReview(Request $request)
+    {
+        $data = $request->validate([
+            'slug' => ['required', 'string'],
+            'rating' => ['required', 'integer', 'min:1', 'max:5'],
+            'comment' => ['required', 'string', 'max:1000'],
+        ]);
+
+        $product = Product::where('slug', $data['slug'])->where('is_active', true)->firstOrFail();
+        $user = $request->user();
+
+        if (! $user->canReviewProduct($product)) {
+            return back()->withErrors(['review' => 'Hanya pembeli dengan pesanan berstatus selesai yang dapat mengulas buku ini.']);
+        }
+
+        if ($user->hasReviewedProduct($product)) {
+            return back()->withErrors(['review' => 'Anda sudah memberikan ulasan untuk buku ini.']);
+        }
+
+        $order = $user->orders()
+            ->where('status', 'completed')
+            ->whereHas('items.productVariant', fn ($q) => $q->where('product_id', $product->id))
+            ->latest()
+            ->first();
+
+        Review::create([
+            'user_id' => $user->id,
+            'product_id' => $product->id,
+            'order_id' => $order?->id,
+            'rating' => $data['rating'],
+            'comment' => $data['comment'],
+            'is_approved' => false,
+        ]);
+
+        return back()->with('status', 'Terima kasih! Ulasan Anda telah dikirim dan menunggu moderasi.');
     }
 }
