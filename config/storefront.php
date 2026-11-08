@@ -2,10 +2,10 @@
 
 return [
     'brand' => [
-        'name' => 'Kembang Books',
+        'name' => 'Daily Books',
         'tagline' => 'Stories for every state of mind.',
-        'email' => 'hello@kembangbooks.test',
-        'description' => 'Kembang Books curates fiction, nonfiction, business, children, and poetry books for curious minds.',
+        'email' => 'hello@dailybooks.test',
+        'description' => 'Daily Books curates fiction, nonfiction, business, children, and poetry books for curious minds.',
     ],
 
     'shipping' => [

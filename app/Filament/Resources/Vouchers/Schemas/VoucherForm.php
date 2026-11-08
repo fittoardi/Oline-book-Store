@@ -25,7 +25,7 @@ class VoucherForm
                             ->maxLength(50)
                             ->live(onBlur: true)
                             ->afterStateUpdated(fn (string $operation, $state, callable $set) => $operation === 'create' ? $set('code', Str::upper($state)) : null)
-                            ->placeholder('KEMBANG10'),
+                            ->placeholder('DAILY10'),
                         TextInput::make('name')
                             ->required()
                             ->maxLength(255),

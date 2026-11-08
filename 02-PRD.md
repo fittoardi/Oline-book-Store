@@ -1,6 +1,6 @@
-# PRD - Kembang Books Customer Storefront
+# PRD - Daily Books Customer Storefront
 
-**Product:** Kembang Books
+**Product:** Daily Books
 **Type:** Single-brand online bookstore
 **Platform:** Laravel 13, PHP 8.3+, Blade, Tailwind CSS, Vite, Eloquent
 **Audience:** Readers, gift buyers, parents, and curious minds
@@ -8,7 +8,7 @@
 
 ## 1. Product Vision
 
-Kembang Books helps customers discover and buy books without the noise of a large marketplace. The storefront should feel like a small, carefully curated shelf: clear, tactile, fast, and easy to browse.
+Daily Books helps customers discover and buy books without the noise of a large marketplace. The storefront should feel like a small, carefully curated shelf: clear, tactile, fast, and easy to browse.
 
 The core customer journey is:
 

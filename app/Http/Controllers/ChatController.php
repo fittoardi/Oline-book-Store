@@ -52,6 +52,6 @@ class ChatController extends Controller
             $conversation->update(['last_message_at' => now()]);
         }
 
-        return to_route('chat.index')->with('status', 'Pesan terkirim. Tim Kembang Books akan segera membalas.');
+        return to_route('chat.index')->with('status', 'Pesan terkirim. Tim Daily Books akan segera membalas.');
     }
 }

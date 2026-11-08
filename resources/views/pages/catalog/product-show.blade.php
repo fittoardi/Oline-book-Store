@@ -168,7 +168,7 @@
                 <div class="mt-8 border border-black bg-[#f3e5df] p-6 sm:p-8">
                     <p class="text-xs font-bold uppercase tracking-[.2em] text-[#faa21f]">Verified Purchase</p>
                     <h3 class="mt-2 text-lg font-bold uppercase">Leave a Review</h3>
-                    <p class="mt-1 text-xs text-[#737373]">Bagikan pengalaman membaca buku ini kepada komunitas Kembang Books.</p>
+                    <p class="mt-1 text-xs text-[#737373]">Bagikan pengalaman membaca buku ini kepada komunitas Daily Books.</p>
 
                     <form method="POST" action="{{ route('reviews.store') }}" class="mt-5 space-y-4">
                         @csrf

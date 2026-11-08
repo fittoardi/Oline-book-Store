@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title', 'About — '.config('storefront.brand.name'))
-@section('meta_description', 'The story behind Kembang Books and our approach to thoughtful reading.')
+@section('meta_description', 'The story behind Daily Books and our approach to thoughtful reading.')
 
 @section('content')
     <section class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 lg:py-20"><div class="grid gap-8 lg:grid-cols-[1fr_360px]"><div><p class="text-xs font-bold uppercase tracking-[.2em] text-[#faa21f]">About the bookstore</p><h1 class="mt-4 max-w-4xl text-5xl font-bold uppercase leading-[1.05] sm:text-7xl">Make room for a new point of view.</h1><p class="mt-7 max-w-2xl text-base leading-8 text-[#333333]">{{ config('storefront.brand.name') }} lahir dari keyakinan sederhana: buku yang baik bisa mengubah cara kita melihat satu hari, satu idea, atau satu sama lain.</p><div class="mt-8 flex flex-wrap gap-3"><a href="{{ route('products.index') }}" class="arcade-button arcade-button-primary uppercase">Browse the shelf ↗</a><a href="{{ route('chat.index') }}" class="arcade-button arcade-button-ghost uppercase">Talk to us</a></div></div><div class="arcade-checkerboard border border-black p-5"><div class="flex min-h-80 flex-col justify-between border border-black bg-[#f3e5df] p-5"><span class="text-4xl font-bold">+</span><div><p class="text-xs uppercase text-[#737373]">Our point of view</p><p class="mt-3 text-lg font-bold uppercase">Less noise. More feeling.</p></div></div></div></div></section>

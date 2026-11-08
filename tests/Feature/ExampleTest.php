@@ -5,6 +5,7 @@ use App\Models\Category;
 use App\Models\ChatConversation;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\Payment;
 use App\Models\Product;
 use App\Models\ProductImage;
 use App\Models\ProductVariant;
@@ -269,7 +270,7 @@ test('a customer can apply a voucher during checkout and receive a discount', fu
     seedCatalog();
 
     Voucher::create([
-        'code' => 'KEMBANG10',
+        'code' => 'DAILY10',
         'name' => 'Diskon 10%',
         'type' => 'percentage',
         'value' => 10,
@@ -283,12 +284,12 @@ test('a customer can apply a voucher during checkout and receive a discount', fu
 
     $this->post('/cart/items', ['slug' => 'the-quiet-atlas', 'quantity' => 1]); // 149,000
 
-    $this->post('/checkout/voucher', ['voucher_code' => 'KEMBANG10'])
+    $this->post('/checkout/voucher', ['voucher_code' => 'DAILY10'])
         ->assertRedirect();
 
     $this->get('/checkout')
         ->assertOk()
-        ->assertSee('KEMBANG10')
+        ->assertSee('DAILY10')
         ->assertSee('14.900'); // 10% of 149,000 is 14,900
 
     $this->post('/checkout', [
@@ -296,7 +297,7 @@ test('a customer can apply a voucher during checkout and receive a discount', fu
         'phone' => '081234567890',
         'address' => 'Jl. Melati No. 1, Jakarta Selatan',
         'payment' => 'Bank transfer',
-        'voucher_code' => 'KEMBANG10',
+        'voucher_code' => 'DAILY10',
     ])->assertRedirect('/orders');
 
     $order = $user->orders()->where('order_number', '!=', 'KB-TEST-0001')->latest()->first();
@@ -444,7 +445,7 @@ test('a customer can simulate and confirm payment on their order', function () {
         'total_amount' => 164000,
     ]);
 
-    $payment = \App\Models\Payment::create([
+    $payment = Payment::create([
         'order_id' => $order->id,
         'provider' => 'tripay',
         'reference' => 'T-TEST-001',
@@ -477,4 +478,3 @@ test('the shop page filters books by price range', function () {
         ->assertOk()
         ->assertSee('The Quiet Atlas');
 });
-

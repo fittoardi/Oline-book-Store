@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title', 'Shop by genre — '.config('storefront.brand.name'))
-@section('meta_description', 'Explore Kembang Books by genre and subject.')
+@section('meta_description', 'Explore Daily Books by genre and subject.')
 
 @section('content')
     <section class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">

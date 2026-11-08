@@ -1,10 +1,10 @@
-# Prompt Pack - Kembang Books
+# Prompt Pack - Daily Books
 
 Use these prompts to continue building the customer bookstore without reintroducing the previous fashion domain.
 
 ## Master Context
 
-You are a senior Laravel and Blade engineer building the customer-facing storefront of **Kembang Books**, a curated single-brand online bookstore. Read `02-PRD.md`, `01-IMPLEMENTATION-PLAN.md`, `04-DESIGN.md`, and `05-DB.md` before changing code.
+You are a senior Laravel and Blade engineer building the customer-facing storefront of **Daily Books**, a curated single-brand online bookstore. Read `02-PRD.md`, `01-IMPLEMENTATION-PLAN.md`, `04-DESIGN.md`, and `05-DB.md` before changing code.
 
 Use Laravel 13, PHP 8.3+, Blade, Tailwind v4, Vite, Alpine.js, Eloquent, and Pest. Do not build Filament in customer tasks. Keep the light arcade bookstore style: cream canvas, black pixel rules, checkerboard surfaces, orange marquee, green purchase button, compact spacing, and no soft shadows.
 

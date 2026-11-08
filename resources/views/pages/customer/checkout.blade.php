@@ -201,7 +201,7 @@
                             <input name="voucher_code" placeholder="Voucher code..." required class="flex-1 border border-black bg-[#f3e5df] px-3 py-2 text-xs uppercase">
                             <button type="submit" class="arcade-button arcade-button-primary uppercase text-xs">Apply</button>
                         </form>
-                        <p class="mt-2 text-[10px] text-[#737373]">Use code <strong>KEMBANG10</strong> for 10% off (min Rp100k).</p>
+                        <p class="mt-2 text-[10px] text-[#737373]">Use code <strong>DAILY10</strong> for 10% off (min Rp100k).</p>
                     @endif
                 </div>
             </aside>

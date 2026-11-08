@@ -47,12 +47,12 @@ class CatalogSeeder extends Seeder
     private function seedUsers(): void
     {
         User::updateOrCreate(
-            ['email' => 'admin@kembangbooks.test'],
-            ['name' => 'Kembang Books Admin', 'phone' => '081200000000', 'role' => 'admin', 'password' => Hash::make('password')],
+            ['email' => 'admin@dailybooks.test'],
+            ['name' => 'Daily Books Admin', 'phone' => '081200000000', 'role' => 'admin', 'password' => Hash::make('password')],
         );
 
         User::updateOrCreate(
-            ['email' => 'customer@kembangbooks.test'],
+            ['email' => 'customer@dailybooks.test'],
             ['name' => 'Nadia Rahma', 'phone' => '081234567890', 'role' => 'customer', 'password' => Hash::make('password')],
         );
 
@@ -336,7 +336,7 @@ class CatalogSeeder extends Seeder
     private function seedVouchersAndPromotions(): void
     {
         Voucher::updateOrCreate(
-            ['code' => 'KEMBANG10'],
+            ['code' => 'DAILY10'],
             ['name' => 'Diskon 10%', 'type' => 'percentage', 'value' => 10, 'minimum_purchase' => 100000, 'maximum_discount' => 50000, 'usage_limit' => 500, 'used_count' => 12, 'starts_at' => now()->subDays(10), 'expires_at' => now()->addDays(60), 'is_active' => true],
         );
 

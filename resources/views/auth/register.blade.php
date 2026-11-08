@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title', 'Register — '.config('storefront.brand.name'))
-@section('meta_description', 'Create a Kembang Books customer account.')
+@section('meta_description', 'Create a Daily Books customer account.')
 
 @section('content')
     <section class="mx-auto max-w-xl px-4 py-12 sm:px-6 lg:px-8">

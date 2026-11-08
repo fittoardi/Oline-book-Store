@@ -27,7 +27,7 @@
 
                 @if($order->payment?->status === 'paid')
                     <p class="mt-3 text-sm leading-6 text-[#128e44] font-bold">
-                        ✓ Pembayaran Anda telah terverifikasi dan pesanan Anda sedang disiapkan oleh tim Kembang Books.
+                        ✓ Pembayaran Anda telah terverifikasi dan pesanan Anda sedang disiapkan oleh tim Daily Books.
                     </p>
                 @else
                     <p class="mt-3 text-sm leading-6 text-[#737373]">

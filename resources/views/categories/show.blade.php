@@ -1,12 +1,12 @@
 @extends('layouts.app')
 
-@section('title', $category->name.' books — Kembang Books')
+@section('title', $category->name.' books — Daily Books')
 
 @section('content')
     <section class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         <a href="{{ route('categories.index') }}" class="text-sm font-bold uppercase hover:underline">← All categories</a>
         <div class="mt-8 border border-black bg-[#f3e5df] p-6 sm:p-10">
-            <p class="text-xs font-bold uppercase tracking-[.3em] text-[#faa21f]">Kembang collection</p>
+            <p class="text-xs font-bold uppercase tracking-[.3em] text-[#faa21f]">Daily collection</p>
             <h1 class="mt-3 text-5xl font-bold uppercase tracking-tight text-black">{{ $category->name }}</h1>
             <p class="mt-4 max-w-xl leading-7 text-[#333333]">{{ $category->description }}</p>
         </div>

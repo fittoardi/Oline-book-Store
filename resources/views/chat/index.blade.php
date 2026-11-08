@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title', 'Customer care — '.config('storefront.brand.name'))
-@section('meta_description', 'Talk to the Kembang Books team about titles, orders, and delivery.')
+@section('meta_description', 'Talk to the Daily Books team about titles, orders, and delivery.')
 
 @section('content')
     <section class="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8 lg:py-20">
@@ -62,7 +62,7 @@
                             @foreach($messages as $msg)
                                 <div class="text-xs {{ $msg->sender_id === auth()->id() ? 'text-right' : 'text-left' }}">
                                     <div class="inline-block max-w-[85%] border border-black p-3 {{ $msg->sender_id === auth()->id() ? 'bg-[#faa21f] text-black' : 'bg-white text-black' }}">
-                                        <p class="font-bold uppercase text-[10px]">{{ $msg->sender?->name ?? 'Kembang Books Support' }}</p>
+                                        <p class="font-bold uppercase text-[10px]">{{ $msg->sender?->name ?? 'Daily Books Support' }}</p>
                                         <p class="mt-1 text-sm">{{ $msg->message }}</p>
                                         <span class="mt-2 block text-[9px] opacity-70">{{ $msg->created_at->format('H:i') }}</span>
                                     </div>

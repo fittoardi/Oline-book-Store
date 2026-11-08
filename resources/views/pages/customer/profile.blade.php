@@ -90,7 +90,7 @@
             <section class="arcade-card h-fit space-y-4">
                 <h2 class="text-lg font-bold uppercase border-b border-[#e5e7eb] pb-3">Need Help?</h2>
                 <p class="text-sm leading-6 text-[#737373]">
-                    Tim layanan pelanggan Kembang Books siap membantu pertanyaan terkait kurasi buku, metode pembayaran, atau status pesanan Anda.
+                    Tim layanan pelanggan Daily Books siap membantu pertanyaan terkait kurasi buku, metode pembayaran, atau status pesanan Anda.
                 </p>
                 <div class="space-y-2 pt-2">
                     <a href="{{ route('chat.index') }}" class="arcade-button arcade-button-primary block text-center uppercase font-bold py-3 text-sm">

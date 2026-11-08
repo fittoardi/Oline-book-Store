@@ -1,4 +1,4 @@
-# Implementation Plan - Kembang Books
+# Implementation Plan - Daily Books
 
 ## Scope
 

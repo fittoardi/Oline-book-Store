@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title', 'Reviews — '.config('storefront.brand.name'))
-@section('meta_description', 'Read what the Kembang Books community says about their latest reads.')
+@section('meta_description', 'Read what the Daily Books community says about their latest reads.')
 
 @section('content')
     <section class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
@@ -9,7 +9,7 @@
             <div class="max-w-2xl">
                 <p class="text-xs font-bold uppercase tracking-[.3em] text-[#faa21f]">From the community</p>
                 <h1 class="mt-4 text-5xl font-bold uppercase leading-[1.05] sm:text-6xl">Read and loved.</h1>
-                <p class="mt-6 max-w-xl leading-8 text-[#333333]">Cerita kecil dari orang-orang yang menjadikan Kembang bagian dari rutinitas mereka.</p>
+                <p class="mt-6 max-w-xl leading-8 text-[#333333]">Cerita kecil dari orang-orang yang menjadikan Daily Books bagian dari rutinitas mereka.</p>
             </div>
             <div class="arcade-card px-5 py-4 text-right"><div class="text-2xl font-bold text-black">4.8 <span class="text-[#faa21f]">★</span></div><p class="mt-1 text-xs text-[#737373]">Loved by our community</p></div>
         </div>
