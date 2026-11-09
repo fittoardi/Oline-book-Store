@@ -63,29 +63,15 @@
                     this.startAutoplay();
                 },
                 startAutoplay() {
-                    this.stopAutoplay();
+                    if (this.autoplayTimer) clearInterval(this.autoplayTimer);
                     this.autoplayTimer = setInterval(() => {
                         this.next();
-                    }, 6500);
-                },
-                stopAutoplay() {
-                    if (this.autoplayTimer) clearInterval(this.autoplayTimer);
+                    }, 5000);
                 },
                 next() {
                     this.currentSlide = (this.currentSlide + 1) % this.totalSlides;
-                },
-                prev() {
-                    this.currentSlide = (this.currentSlide - 1 + this.totalSlides) % this.totalSlides;
-                },
-                goTo(index) {
-                    this.currentSlide = index;
-                    this.startAutoplay();
                 }
             }"
-            @mouseenter="stopAutoplay()"
-            @mouseleave="startAutoplay()"
-            @keydown.right.window="next()"
-            @keydown.left.window="prev()"
             class="relative w-full overflow-hidden bg-[#823513] border-b border-dotted border-[#faae33]"
             aria-label="Featured Books Carousel"
         >
@@ -196,36 +182,13 @@
                 @endforeach
             </div>
 
-            {{-- Floating Controls: Prev & Next Buttons --}}
-            <div class="pointer-events-none absolute inset-y-0 left-0 right-0 flex items-center justify-between px-2 sm:px-6">
-                <button 
-                    type="button" 
-                    @click="prev()" 
-                    class="pointer-events-auto flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full border border-[#faae33] bg-[#281006]/80 text-lg font-bold text-[#faae33] backdrop-blur-sm transition-all hover:bg-[#faae33] hover:text-[#281006] focus:outline-none"
-                    aria-label="Previous Slide"
-                >
-                    ←
-                </button>
-                <button 
-                    type="button" 
-                    @click="next()" 
-                    class="pointer-events-auto flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full border border-[#faae33] bg-[#281006]/80 text-lg font-bold text-[#faae33] backdrop-blur-sm transition-all hover:bg-[#faae33] hover:text-[#281006] focus:outline-none"
-                    aria-label="Next Slide"
-                >
-                    →
-                </button>
-            </div>
-
-            {{-- Slide Indicator Pills --}}
-            <div class="absolute bottom-4 left-0 right-0 flex items-center justify-center gap-2">
+            {{-- Slide Visual Progress Indicators (Non-interactive) --}}
+            <div class="pointer-events-none absolute bottom-4 left-0 right-0 flex items-center justify-center gap-2">
                 @foreach($slideItems as $index => $slide)
-                    <button 
-                        type="button"
-                        @click="goTo({{ $index }})"
-                        :class="currentSlide === {{ $index }} ? 'w-8 bg-[#faae33]' : 'w-2 bg-[#6b2e12] hover:bg-[#faae33]/60'"
-                        class="h-2 rounded-full transition-all duration-300 focus:outline-none"
-                        aria-label="Go to slide {{ $index + 1 }}"
-                    ></button>
+                    <span 
+                        :class="currentSlide === {{ $index }} ? 'w-8 bg-[#faae33]' : 'w-2 bg-[#6b2e12]/80'"
+                        class="h-1.5 rounded-full transition-all duration-500"
+                    ></span>
                 @endforeach
             </div>
         </section>
