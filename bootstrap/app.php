@@ -25,15 +25,15 @@ return Application::configure(basePath: dirname(__DIR__))
         );
 
         $exceptions->render(function (Throwable $exception, Request $request) {
-            if (config('app.debug')) {
-                return null;
-            }
-
             if ($exception instanceof AuthenticationException) {
                 return null;
             }
 
             if ($request->is('api/*') || $request->expectsJson()) {
+                return null;
+            }
+
+            if (! ($exception instanceof HttpExceptionInterface) && config('app.debug') && ! app()->environment('testing')) {
                 return null;
             }
 

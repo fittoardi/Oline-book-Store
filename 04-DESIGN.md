@@ -1,198 +1,220 @@
-# FRANKY'S — Style Reference
-> Retro arcade kiosk on a skate-shop counter.
+# Hungry Tiger — Style Reference
+> Turmeric-bright graffiti on a tandoor wall. A single gold-on-rust palette with display type so large it reads as a spice market sign, not a webpage.
 
-**Theme:** light
+**Theme:** dark
 
 Source measurements are normalized; roles and recommendations are interpreted. Font summary lists are independent, not paired by position. HTML examples are reconstructions, not source components.
 
-Franky's is a retro arcade-meets-skate-shop visual language: a warm cream canvas (#f3e5df) wrapped in hard pixel-art borders, an omnipresent black-and-white checkerboard, and a single Arcade pixel font carrying every word on the site. The palette is deliberately impoverished — only two chromatic colors survive (signal-orange #faa21f for the marquee bar and a punchy green #128e44 for the buy button), with all hierarchy expressed through the Arcade font's weight jump from 400 to 700 and through black-on-cream contrast. Surfaces stay flat and monolithic; depth comes only from a 1px inset cream line on buttons and the checkerboard's tonal play. Components feel like 1990s shopfront sprites: thick black borders, tight 6–12px radii, compact 4–8px internal padding, and 3D/AR toggles that read as pixel icons rather than chrome. New pages should preserve the arcade cabinet feel: no gradients except the orange marquee, no soft shadows, no decorative typography — just cream paper, black pixel rules, and one warm orange call.
+Hungry Tiger is a fire-roasted condiment brand rendered as a maximalist typographic poster: a deep rust-brown canvas, a single searing Tiger Gold accent, and an absurdly oversized custom display face that swallows the viewport. The system behaves like a spice label — confident, warm, slightly aggressive — with pill-shaped controls, dotted horizontal rules, and dense botanical watermarks that suggest Indian heat without literal illustration. Text is the hero; product photography is small and isolated against the dark. Every surface shares the same warm brown family, and contrast is driven by the gold against charred browns, not by adding new hues.
 
 ## Tokens — Colors
 
 | Name | Value | Token | Role |
 |------|-------|-------|------|
-| Arcade Cream | `#f3e5df` | `--color-arcade-cream` | Page background, product card surfaces, inset highlights on buttons |
-| Ink Black | `#000000` | `--color-ink-black` | Primary text, checkerboard tiles, all UI borders, card outlines, icon strokes |
-| Pixel Gray | `#e5e7eb` | `--color-pixel-gray` | Hairline borders, card dividers, structural rules between grid cells |
-| Charcoal | `#333333` | `--color-charcoal` | Secondary surface tone, checkerboard shadow squares, shadow color |
-| Carbon | `#151515` | `--color-carbon` | Deep neutral for illustration fills and the densest checkerboard tiles |
-| Muted Gray | `#737373` | `--color-muted-gray` | Disabled/muted text on buttons and body copy |
-| Marquee Orange | `#faa21f` | `--color-marquee-orange` | Top notification bar, marquee accents, brand signature |
-| Buy Green | `#128e44` | `--color-buy-green` | Filled ADD TO CART button — the only green purchase action |
+| Tiger Gold | `#faae33` | `--color-tiger-gold` | Primary action, filled buttons, active nav, heading strokes, key icon accents — the only chromatic color permitted to leave the warm-brown monochrome and interrupt the page |
+| Ember Rust | `#823513` | `--color-ember-rust` | Dominant page canvas and hero backdrop — the color that defines every viewport |
+| Saffron Glow | `#9f531b` | `--color-saffron-glow` | Secondary heading accent, decorative borders, mid-tone text — a warm orange that softens Tiger Gold without competing |
+| Dark Spice | `#402011` | `--color-dark-spice` | Card surfaces, input fields, badge fills, button ghost backgrounds, body text color — the workhorse dark-brown that lifts content off Ember Rust |
+| Charred Clove | `#281006` | `--color-charred-clove` | Deepest surface — used for innermost cards, modal scrim, and the background behind the deepest contrast pairs |
+| Cardamom Brown | `#6b2e12` | `--color-cardamom-brown` | Input borders, subtle dividers, muted inline elements — a step between Dark Spice and Ember Rust |
+| Chili Red | `#d1255c` | `--color-chili-red` | Saturated accent reserved for badge fills and alert-level highlights — appears sparingly to signal heat |
 
 ## Tokens — Typography
 
-### Arcade — Sole typeface across the entire interface — every heading, label, price, button, body and icon is set in Arcade. The 400/700 weight jump is the only hierarchy tool; using a second typeface would shatter the kiosk illusion. · `--font-arcade`
-- **Substitute:** VT323, Press Start 2P (Google Fonts pixel set) — match the 8-bit, all-caps-leaning look
-- **Weights:** 400, 700
-- **Sizes:** 10px, 14px, 16px, 18px
-- **Line height:** 1.25, 1.43, 1.50, 1.56
-- **Letter spacing:** normal across all sizes — the font's bitmap grid is the rhythm, not tracking
-- **Role:** Sole typeface across the entire interface — every heading, label, price, button, body and icon is set in Arcade. The 400/700 weight jump is the only hierarchy tool; using a second typeface would shatter the kiosk illusion.
+### Salmond — Universal typeface: display headlines at 130–213px weight 700 with line-height clamped to 0.80–0.90 create the poster-scale hero, while the same family drops to 11–18px for nav, badges, and body. Negative tracking (-0.02em to -0.005em) tightens headlines; positive tracking (0.01–0.02em) opens small caps-style labels. This single-font-everywhere choice is the brand's strongest signature — there is no secondary display face to dilute it. · `--font-salmond`
+- **Substitute:** Druk Wide, Antonio, Bebas Neue (for display); Inter or Untitled Sans (for small sizes)
+- **Weights:** 400, 500, 700
+- **Sizes:** 11, 12, 13, 14, 18, 29, 42, 43, 65, 68, 72, 101, 130, 144, 195, 213
+- **Line height:** 0.70–1.43 (tight 0.70–0.95 for display sizes 65px+, generous 1.20–1.43 for 11–18px UI sizes)
+- **Letter spacing:** -0.02em at 213px down to 0.02em at 11px — scale inversely with size: the bigger the type, the tighter the tracking
+- **Role:** Universal typeface: display headlines at 130–213px weight 700 with line-height clamped to 0.80–0.90 create the poster-scale hero, while the same family drops to 11–18px for nav, badges, and body. Negative tracking (-0.02em to -0.005em) tightens headlines; positive tracking (0.01–0.02em) opens small caps-style labels. This single-font-everywhere choice is the brand's strongest signature — there is no secondary display face to dilute it.
+
+### Graphikx — Restricted to 13px weight 500 for body micro-copy, button labels, and inline meta where Salmond would feel too loud. Acts as a quiet functional voice against Salmond's shout. · `--font-graphikx`
+- **Substitute:** Inter, Geist, Untitled Sans
+- **Weights:** 500
+- **Sizes:** 13
+- **Line height:** 1.00–1.30
+- **Letter spacing:** -0.02em to 0.01em
+- **Role:** Restricted to 13px weight 500 for body micro-copy, button labels, and inline meta where Salmond would feel too loud. Acts as a quiet functional voice against Salmond's shout.
 
 ### Type Scale
 
 | Role | Family | Weight | Size | Line Height | Letter Spacing | Token |
 |------|--------|--------|------|-------------|----------------|-------|
-| caption | — | — | 10px | 1.5 | — | `--text-caption` |
-| body-sm | — | — | 14px | 1.43 | — | `--text-body-sm` |
-| body | — | — | 16px | 1.5 | — | `--text-body` |
-| subheading | — | — | 18px | 1.56 | — | `--text-subheading` |
+| caption | — | — | 11px | 1.2 | 0.02px | `--text-caption` |
+| subheading | — | — | 18px | 1.2 | 0.01px | `--text-subheading` |
+| heading-sm | — | — | 29px | 1.1 | -0.005px | `--text-heading-sm` |
+| heading | — | — | 65px | 0.95 | -0.01px | `--text-heading` |
+| heading-lg | — | — | 101px | 0.9 | -0.016px | `--text-heading-lg` |
+| display | — | — | 195px | 0.8 | -0.02px | `--text-display` |
 
 ## Tokens — Spacing & Shapes
 
-**Base unit:** 4px
-
-**Density:** compact
+**Density:** comfortable
 
 ### Spacing Scale
 
 | Name | Value | Token |
 |------|-------|-------|
 | 4 | 4px | `--spacing-4` |
+| 6 | 6px | `--spacing-6` |
 | 8 | 8px | `--spacing-8` |
+| 9 | 9px | `--spacing-9` |
+| 10 | 10px | `--spacing-10` |
 | 12 | 12px | `--spacing-12` |
+| 14 | 14px | `--spacing-14` |
+| 16 | 16px | `--spacing-16` |
+| 17 | 17px | `--spacing-17` |
+| 20 | 20px | `--spacing-20` |
 | 24 | 24px | `--spacing-24` |
-| 44 | 44px | `--spacing-44` |
+| 26 | 26px | `--spacing-26` |
+| 28 | 28px | `--spacing-28` |
+| 32 | 32px | `--spacing-32` |
+| 42 | 42px | `--spacing-42` |
+| 192 | 192px | `--spacing-192` |
 
 ### Border Radius
 
 | Element | Value |
 |---------|-------|
-| tags | 9999px |
-| cards | 12px |
-| buttons | 6px |
-
-### Shadows
-
-| Name | Value | Token |
-|------|-------|-------|
-| subtle | `rgb(243, 229, 223) 0px 1px 0px 0px inset` | `--shadow-subtle` |
+| cards | 6px |
+| badges | 9999px |
+| inputs | 9999px |
+| buttons | 9999px |
 
 ### Layout
 
-- **Page max-width:** 1200px
-- **Section gap:** 43-61px
-- **Card padding:** 12px
-- **Element gap:** 4-8px
+- **Page max-width:** 1440px
+- **Section gap:** 80-120px
+- **Card padding:** 12-16px
+- **Element gap:** 10px
 
 ## Components
 
-### Marquee Announcement Bar
-**Role:** Top-of-page strip
+### Ghost Outline Button
+**Role:** Default interactive control (SAUCE, ABOUT, RECIPES, GAME, CONTACT, BUY NOW)
 
-Full-width band filled with the Marquee Sheen gradient (orange → cream → orange). Arcade 14px/400, letter-spacing normal, black or dark-brown text. Height ~36px, flush with the top of the viewport. It is the only decorative chromatic surface on the page.
+Salmond weight 500, 13px, 0.01em tracking, text color #faae33, 1px border in #faae33, fully rounded radius (1296px — effectively pill), padding 8px 17px, transparent fill so the Ember Rust canvas reads through. Used for every nav link and secondary action.
 
-### Header Bar
-**Role:** Primary navigation
+### Filled Primary Button
+**Role:** Hero call to action (BUY NOW in hero, primary CTAs)
 
-Cream (#f3e5df) background, 1px solid #000000 bottom border. Wordmark 'franky's' set in Arcade 18px/700 in #000000 with a small black cross pixel-icon. Hamburger menu on the right (three 2px black lines, 16px apart). No drop shadow, no sticky elevation — it sits flat on the cream canvas.
+Salmond weight 500, 13px, #281006 text on #faae33 fill, 1px #faae33 border, 1296px radius, padding 10px 20px. The only filled button in the system — its darkness against the gold makes it the loudest interactive element on any page.
 
-### Product Showcase Panel (3D/AR)
-**Role:** Hero product viewer
+### Ghost Borderless Button
+**Role:** Low-emphasis text link sitting inline with body copy
 
-Large left-hand panel (roughly 55% of viewport width) with a black-and-cream checkerboard floor receding in perspective. A charcoal (#333333) cap floats centered with a soft #333333 shadow. Bottom-center contains two pill toggles: '3D' and 'AR', each 6px radius, 1px inset cream highlight (#f3e5df 0px 1px 0px 0px inset), 2px 8px padding, Arcade 14px/400.
+Salmond 13px weight 500, #faae33 text, no border, no background. Appears in paragraph-adjacent micro-CTA positions.
 
-### Product Card
-**Role:** Grid cell for one SKU
+### Pill Badge
+**Role:** Tag, label, category marker (product type, flavor note)
 
-Cream (#f3e5df) background, 12px radius, 1px solid #e5e7eb border. Internal padding 12px. Product image fills the top ~70% of the card on a pure cream backdrop. Title (e.g. 'FRANKY'S GREEN 665') in Arcade 14px/700 #000000 at the bottom-left, price in Arcade 14px/400 #000000 at the bottom-right. Two stacked controls under the title area: ghost 'TRY IN AR' button and filled or ghost 'ADD TO CART' / 'OUT OF STOCK' button.
+Salmond 11–12px weight 500 uppercase, 0.02em tracking, pill radius 1080px, padding 4–8px vertical, 12–16px horizontal. Fill is #faae33 with #281006 text for primary tags, or #402011 with #faae33 text for secondary tags.
 
-### Try In AR Button (Ghost)
-**Role:** 3D/AR preview trigger
+### Alert Badge
+**Role:** Heat-level or flavor-intensity indicator
 
-6px radius, transparent fill, 1px solid #000000 border, Arcade 14px/400 #000000. Padding 4px 12px. The 'AR' suffix is wrapped in a tiny pill (9999px) to read as a badge.
+Pill-shaped, 1080px radius, fill #d1255c, 11px Salmond weight 500, padding 4px 12px. Reserved for the rare spicy/heat callouts.
 
-### Add To Cart Button (Filled Green)
-**Role:** Primary purchase action
+### Pill Input Field
+**Role:** Email capture, search, form fields
 
-6px radius, #128e44 background, Arcade 14px/700 #ffffff (white) text, fully uppercase. Padding 8px 12px. Optional 1px inset cream highlight (#f3e5df 0px 1px 0px 0px inset) to keep the arcade-button feel. This is the only green surface in the system.
+Fully rounded (1224px radius) input, 1px #6b2e12 border on transparent fill, Salmond 13px weight 500 placeholder, 12–16px vertical padding, 16–20px horizontal padding. No visible focus ring — interaction states use border-color shift to #faae33.
 
-### Out Of Stock Button (Disabled Ghost)
-**Role:** Depleted SKU state
+### Surface Card
+**Role:** Product card, recipe card, content tile
 
-6px radius, transparent fill, 1px solid #737373 border, Arcade 14px/400 #737373 text. Same dimensions as the live Add-To-Cart button so the grid stays uniform.
+6px radius, fill #402011, padding 12–16px, no shadow — depth comes from the 2-step color shift against the Ember Rust canvas, not from elevation.
 
-### Marquee Tag (Pill Badge)
-**Role:** Inline label inside buttons and cards
+### Product Bottle Showcase
+**Role:** Hero product image container
 
-9999px radius, 1px solid #000000 border, Arcade 10px/400 #000000, padding 2px 8px. Used for suffixes like 'AR' or sub-tags inside cards.
+Raw product photography on a transparent canvas, no card frame, no background plate. The jar sits directly on the Ember Rust hero with a subtle warm highlight rim suggesting backlight.
 
-### Footer Strip
-**Role:** Bottom-of-page info bar
+### Botanical Watermark Layer
+**Role:** Atmospheric background motif
 
-1px solid #e5e7eb top border on cream. Left: '© FRANKY'S AMSTERDAM 2023' in Arcade 14px/400 #000000. Right: 'SUBSCRIBE' and 'SHIPPING' in Arcade 14px/700 #000000 acting as ghost links.
+Faded fern/leaf/flower illustrations rendered as background watermarks behind content sections. Low-contrast, near-invisible at resting state — they only become readable when the eye settles, reinforcing the 'tandoor wall' texture without competing with type.
 
-### Checkerboard Surface
-**Role:** Hero texture / brand pattern
+### Dotted Divider
+**Role:** Horizontal section separator
 
-Repeating two-tone square grid in #f3e5df and #000000 (or #333333 for shadowed variants). Square size ~48px. Used as the hero panel backdrop and as decorative banding; never as a functional UI surface.
+1px dotted line in #faae33 spanning full width, used between major viewport sections. Replaces whitespace-only separation and gives the page a label-printed rhythm.
+
+### Iconography Set
+**Role:** Small utility icons (bag, search, basket, social)
+
+Thin-stroke 1.5px line icons rendered in #faae33, 16–20px, circular button containers with 1296px radius. Icons are always gold, never filled, never multi-color.
 
 ## Do's and Don'ts
 
 ### Do
-- Use Arcade 400 for body, labels, prices, and captions; jump to Arcade 700 only for titles, nav items, and the footer links — the weight shift is the entire hierarchy.
-- Set every CTA, tag, and toggle to a 6px radius (or 9999px for the inline 'AR' pill) and add the 1px inset cream highlight (#f3e5df 0px 1px 0px 0px inset) to keep the arcade-button bevel.
-- Use Buy Green (#128e44) only for the filled Add-To-Cart button; never reuse it for links, borders, or hover states.
-- Anchor the page on Arcade Cream (#f3e5df); use Pixel Gray (#e5e7eb) for 1px structural rules and card borders, Ink Black (#000000) for text and checkerboard contrast.
-- Reserve Marquee Orange (#faa21f) for the top announcement bar and the optional Marquee Sheen gradient — it should never appear as a button fill or large text color.
-- Keep vertical rhythm in 4px increments; element gaps live at 4–8px, card padding at 12px, and section gaps at 43–61px.
-- Pair every product card with a Try-In-AR ghost button stacked above the Add-To-Cart (or Out-Of-Stock) button so the right-hand grid stays uniform.
+- Use Salmond at 130–213px weight 700 with line-height 0.80–0.90 for all hero and section display headlines — this is the brand's voice and must never be downsized into body territory
+- Set all buttons, badges, inputs, and icon containers to 9999px (1296px in tokens) radius — sharp corners break the spice-label personality
+- Use only #faae33 as the chromatic accent against the brown monochrome; never introduce additional bright colors except the reserved #d1255c for heat-level badges
+- Step surface depth through three browns: #823513 (page) → #402011 (card) → #281006 (deepest) — never use box-shadow to imply elevation
+- Apply dotted #faae33 horizontal rules as section dividers between major viewports instead of relying on whitespace alone
+- Tighten letter-spacing inversely to size: -0.02em at display sizes, 0.01–0.02em at 11–18px — Salmond's tracking is a load-bearing part of its character
+- Crown every viewport with massive type first, then position product photography as a small anchored element below — the page is a poster, not a storefront
 
 ### Don't
-- Don't introduce a second typeface — no system fonts, no sans-serifs, no display scripts. Arcade is the brand.
-- Don't use soft drop shadows; the only shadow allowed is the 1px inset cream highlight on buttons and the flat #333333 under the floating cap.
-- Don't round cards above 12px or buttons below 6px — the 6/12/9999px triad is the only permitted radius vocabulary.
-- Don't place Buy Green (#128e44) on a non-purchase element, and don't pair it with the Marquee Sheen gradient in the same component.
-- Don't dilute the checkerboard — it must read as pure #000000 against #f3e5df (or #333333 for shadow tones), never as a tinted gray or blurred pattern.
-- Don't use dark-mode backgrounds; the canvas is always Arcade Cream, even inside cards and modals.
-- Don't exceed 18px on any text or drop below 10px — the Arcade font's bitmap grid breaks outside that range.
+- Do not introduce a secondary display typeface — Salmond owns the entire type system, and adding a different heading face dilutes the brand voice
+- Do not use box-shadow, drop-shadow, or glow effects on any component — the flat tandoor-wall aesthetic is non-negotiable
+- Do not place product photography in large rectangular frames, cards, or with rounded edges — the bottle should sit raw on the canvas
+- Do not use the 6px radius for anything other than cards — buttons, badges, inputs, and icon containers must all be full pills
+- Do not dilute the gold-on-brown palette with white, blue, green, or cool neutrals — the system is intentionally monochromatic-warm
+- Do not let body copy exceed 18px or sit at more than 1.4 line-height — the design is poster-first and any comfortable reading block will feel out of place
+- Do not use solid color blocks for section backgrounds — every section is Ember Rust; depth comes from type scale and surface color shifts, not from alternating bands
 
 ## Surfaces
 
 | Level | Name | Value | Purpose |
 |-------|------|-------|---------|
-| 1 | Arcade Cream | `#f3e5df` | Page canvas — warm off-white that makes the pixel font breathe |
-| 2 | Pixel Gray | `#e5e7eb` | Grid gutter tone and product card background variation |
-| 3 | Charcoal | `#333333` | Checkerboard shadow squares and tertiary surface |
-| 4 | Carbon | `#151515` | Deepest checkerboard tone, near-black illustration fills |
+| 0 | Tandoor Canvas | `#823513` | Full-viewport page background, hero section, all primary surfaces |
+| 1 | Spice Card | `#402011` | Card surfaces, button ghost fills, input fields, badge backgrounds |
+| 2 | Charred Core | `#281006` | Deepest recessed surface, inner modals, maximum-contrast text backing |
 
 ## Elevation
 
-- **Add To Cart / Ghost buttons:** `inset 0 1px 0 0 #f3e5df — 1px cream pixel-highlight at the top edge`
-- **Floating product cap in hero:** `flat #333333 drop, no blur, sits directly under the product`
+- **No elevated components:** `none — the system intentionally avoids box-shadows`
 
 ## Imagery
 
-Photography of caps on a pure cream backdrop, centered and tightly cropped, with a soft charcoal contact shadow beneath. No lifestyle, no models, no context — the cap is the hero. The checkerboard behind the hero doubles as a graphic surface. No illustrations, no 3D renders beyond the AR toggle, no decorative icons beyond the pixel cross in the wordmark.
+Product photography is tightly cropped, studio-lit jars of sauce centered against the Ember Rust canvas — no lifestyle context, no hands, no kitchen. The jar IS the hero. Background atmosphere is delivered through low-opacity botanical watermarks (ferns, leaves, florals) that read as spice-garden texture rather than illustration. No 3D renders, no abstract graphics, no people. Imagery density is intentionally low — the page is 90% type, 10% product.
 
 ## Layout
 
-Full-bleed single-screen product page on desktop, max-width 1200px centered. Top-to-bottom rhythm: orange marquee bar → cream header with black rule → two-column split (55% hero checkerboard / 45% 2-column product card grid) → cream footer strip. On mobile, the hero collapses to a full-width checkerboard and the grid becomes a single column. Cards are evenly distributed in a 2-column grid with Pixel Gray (#e5e7eb) hairline dividers between them. Section gaps are tight (43–61px) and the interface never uses full-bleed dark bands — the cream canvas runs uninterrupted.
+Full-bleed dark page with no max-width container; content is laid out in asymmetric two-column compositions where a massive display headline occupies one side and a small product image anchors the other. The hero is a full-viewport poster: eyebrow text top-left, then 200px+ display type, then a centered product bottle below. Subsequent sections alternate between left-anchored headline + right-side product bottle and centered product + surrounding type. Dotted gold dividers separate every major band. Navigation is a minimal top bar with ghost pill buttons and a centered brand mark. Floating circular icon buttons (bag, basket) dock in the bottom-right corner. Vertical rhythm is spacious — 80–120px between sections, allowing the poster-scale type to breathe without competing.
 
 ## Agent Prompt Guide
 
-Quick Color Reference:
-- text: #000000 on #f3e5df
-- background: #f3e5df (Arcade Cream)
-- border: #e5e7eb hairline, #000000 for structural rules
-- accent: #faa21f (Marquee Orange — top bar only)
-- primary action: #128e44 (filled action)
-- disabled/muted: #737373 text on ghost button
+## Quick Color Reference
+- Page canvas: #823513 (Ember Rust)
+- Card surface: #402011 (Dark Spice)
+- Deepest surface: #281006 (Charred Clove)
+- Primary text / heading strokes: #faae33 (Tiger Gold)
+- Body text: #402011 (Dark Spice) — or #faae33 on dark fields
+- Hairline borders / input borders: #6b2e12 (Cardamom Brown)
+- Heat-level accent: #d1255c (Chili Red) — badges only
+- primary action: #faae33 (filled action)
 
-Example Component Prompts:
-1. Product Card — Cream (#f3e5df) background, 12px radius, 1px solid #e5e7eb border, 12px padding. Title 'FRANKY'S GREEN 665' in Arcade 14px/700 #000000 bottom-left, price '€65' in Arcade 14px/400 #000000 bottom-right. Stacked controls: a ghost 'TRY IN AR' button (6px radius, transparent fill, 1px #000000 border, Arcade 14px/400, 4px 12px padding) with the 'AR' suffix in a 9999px pill, above a filled Add-To-Cart button (#128e44, Arcade 14px/700 white, 6px radius, 8px 12px padding, 1px inset #f3e5df highlight).
-2. Marquee Announcement Bar — Full-width strip, 36px tall, filled with linear-gradient(to right, #faa21f, #fef3c7, #faa21f). Text 'KIN. STORE. COUPONS' in Arcade 14px/400 #000000, centered.
-3. Header Bar — Cream (#f3e5df) background, 1px solid #000000 bottom border, 44px tall. Wordmark 'franky's' with pixel-cross icon in Arcade 18px/700 #000000 left-aligned, three 2px black horizontal lines (16px apart) right-aligned as a hamburger.
-4. 3D/AR Hero Panel — 55% viewport width, filled with a 48px repeating #f3e5df / #000000 checkerboard. A charcoal (#333333) cap centered with a flat #333333 contact shadow. Two pill toggles '3D' and 'AR' centered at the bottom: 6px radius, transparent fill, 1px #000000 border, Arcade 14px/400, 1px inset #f3e5df highlight, 2px 8px padding.
-5. Footer Strip — 1px solid #e5e7eb top border on #f3e5df, 32px tall. Left: '© FRANKY'S AMSTERDAM 2023' in Arcade 14px/400 #000000. Right: 'SUBSCRIBE' and 'SHIPPING' in Arcade 14px/700 #000000 with 24px gap between them.
+## 3–5 Example Component Prompts
+1. **Hero Display Headline**: Render 'BOLD FLAVOR' at 195px Salmond weight 700, line-height 0.80, letter-spacing -0.02em, color #faae33, on a full-bleed #823513 canvas. Place a 13px Salmond weight 500 eyebrow 'FIRE ROASTED INDIAN SAUCE' above it in #faae33 with 0.01em tracking.
+
+2. **Ghost Nav Button**: Pill-shaped button, 1296px radius, transparent fill, 1px #faae33 border, padding 8px 17px, text 'SAUCE' in 13px Salmond weight 500, color #faae33, letter-spacing 0.01em.
+
+3. **Filled Primary CTA**: Pill button, 1296px radius, fill #faae33, 1px #faae33 border, padding 10px 20px, text 'BUY NOW' in 13px Salmond weight 500, color #281006.
+
+4. **Pill Input Field**: Fully rounded input (1224px radius), transparent fill, 1px #6b2e12 border, padding 12px 20px, placeholder 'email address' in 13px Salmond weight 500 #faae33 at 60% opacity. On focus, border shifts to #faae33.
+
+5. **Product Card Section**: Full-bleed #823513 band, left column 'A NEW ANGLE OF FLAVOR' at 101px Salmond weight 700, line-height 0.90, color #faae33. Right column: raw product bottle PNG, no card frame, no background plate, anchored bottom-right. Caption 'DISCOVER HOW OUR CREAMY TOMATO BLEND AND AUTHENTIC SPICES ELEVATE EVERY MEAL' in 13px Salmond weight 500 #faae33 below the headline.
 
 ## Similar Brands
 
-- **Polar Skate Co.** — Same flat cream canvas, bold black-bordered product cards, and a single warm accent (Polar's red, Franky's orange) on a marquee bar
-- **Palace Skateboards** — Pixel/bitmap-influenced type system, checkerboard product framing, and the 6px-radius beveled button look
-- **Stüssy** — Compact cream-and-black product grid with tight padding and a single chromatic CTA color
-- **Aimé Leon Dore** — Warm off-white surfaces, monospaced/pixel-adjacent labels, and minimal-but-precise card radii
+- **Graza** — Same single warm-color-dominant dark canvas with a vivid accent and oversized display type; both treat the product label as the design language
+- **Omsom** — Similar maximalist Asian-food brand typography with tightly-tracked display faces and warm rust palettes
+- **Fly by Jing** — Bold dark-mode product brand with one saturated accent color and poster-scale headlines dominating every viewport
+- **Diaspora Co.** — Same single-accent-on-dark-rust visual system with spice-market typographic confidence and flat surfaces
 
 ## Quick Start
 
@@ -201,64 +223,84 @@ Example Component Prompts:
 ```css
 :root {
   /* Colors */
-  --color-arcade-cream: #f3e5df;
-  --color-ink-black: #000000;
-  --color-pixel-gray: #e5e7eb;
-  --color-charcoal: #333333;
-  --color-carbon: #151515;
-  --color-muted-gray: #737373;
-  --color-marquee-orange: #faa21f;
-  --color-buy-green: #128e44;
+  --color-tiger-gold: #faae33;
+  --color-ember-rust: #823513;
+  --color-saffron-glow: #9f531b;
+  --color-dark-spice: #402011;
+  --color-charred-clove: #281006;
+  --color-cardamom-brown: #6b2e12;
+  --color-chili-red: #d1255c;
 
   /* Typography — Font Families */
-  --font-arcade: 'Arcade', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-salmond: 'Salmond', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-graphikx: 'Graphikx', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 
   /* Typography — Scale */
-  --text-caption: 10px;
-  --leading-caption: 1.5;
-  --text-body-sm: 14px;
-  --leading-body-sm: 1.43;
-  --text-body: 16px;
-  --leading-body: 1.5;
+  --text-caption: 11px;
+  --leading-caption: 1.2;
+  --tracking-caption: 0.02px;
   --text-subheading: 18px;
-  --leading-subheading: 1.56;
+  --leading-subheading: 1.2;
+  --tracking-subheading: 0.01px;
+  --text-heading-sm: 29px;
+  --leading-heading-sm: 1.1;
+  --tracking-heading-sm: -0.005px;
+  --text-heading: 65px;
+  --leading-heading: 0.95;
+  --tracking-heading: -0.01px;
+  --text-heading-lg: 101px;
+  --leading-heading-lg: 0.9;
+  --tracking-heading-lg: -0.016px;
+  --text-display: 195px;
+  --leading-display: 0.8;
+  --tracking-display: -0.02px;
 
   /* Typography — Weights */
   --font-weight-regular: 400;
+  --font-weight-medium: 500;
   --font-weight-bold: 700;
 
   /* Spacing */
-  --spacing-unit: 4px;
   --spacing-4: 4px;
+  --spacing-6: 6px;
   --spacing-8: 8px;
+  --spacing-9: 9px;
+  --spacing-10: 10px;
   --spacing-12: 12px;
+  --spacing-14: 14px;
+  --spacing-16: 16px;
+  --spacing-17: 17px;
+  --spacing-20: 20px;
   --spacing-24: 24px;
-  --spacing-44: 44px;
+  --spacing-26: 26px;
+  --spacing-28: 28px;
+  --spacing-32: 32px;
+  --spacing-42: 42px;
+  --spacing-192: 192px;
 
   /* Layout */
-  --page-max-width: 1200px;
-  --section-gap: 43-61px;
-  --card-padding: 12px;
-  --element-gap: 4-8px;
+  --page-max-width: 1440px;
+  --section-gap: 80-120px;
+  --card-padding: 12-16px;
+  --element-gap: 10px;
 
   /* Border Radius */
   --radius-md: 6px;
-  --radius-xl: 12px;
-  --radius-full: 9999px;
+  --radius-full: 1080px;
+  --radius-full-2: 1152px;
+  --radius-full-3: 1224px;
+  --radius-full-4: 1296px;
 
   /* Named Radii */
-  --radius-tags: 9999px;
-  --radius-cards: 12px;
-  --radius-buttons: 6px;
-
-  /* Shadows */
-  --shadow-subtle: rgb(243, 229, 223) 0px 1px 0px 0px inset;
+  --radius-cards: 6px;
+  --radius-badges: 9999px;
+  --radius-inputs: 9999px;
+  --radius-buttons: 9999px;
 
   /* Surfaces */
-  --surface-arcade-cream: #f3e5df;
-  --surface-pixel-gray: #e5e7eb;
-  --surface-charcoal: #333333;
-  --surface-carbon: #151515;
+  --surface-tandoor-canvas: #823513;
+  --surface-spice-card: #402011;
+  --surface-charred-core: #281006;
 }
 ```
 
@@ -267,41 +309,61 @@ Example Component Prompts:
 ```css
 @theme {
   /* Colors */
-  --color-arcade-cream: #f3e5df;
-  --color-ink-black: #000000;
-  --color-pixel-gray: #e5e7eb;
-  --color-charcoal: #333333;
-  --color-carbon: #151515;
-  --color-muted-gray: #737373;
-  --color-marquee-orange: #faa21f;
-  --color-buy-green: #128e44;
+  --color-tiger-gold: #faae33;
+  --color-ember-rust: #823513;
+  --color-saffron-glow: #9f531b;
+  --color-dark-spice: #402011;
+  --color-charred-clove: #281006;
+  --color-cardamom-brown: #6b2e12;
+  --color-chili-red: #d1255c;
 
   /* Typography */
-  --font-arcade: 'Arcade', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-salmond: 'Salmond', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-graphikx: 'Graphikx', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 
   /* Typography — Scale */
-  --text-caption: 10px;
-  --leading-caption: 1.5;
-  --text-body-sm: 14px;
-  --leading-body-sm: 1.43;
-  --text-body: 16px;
-  --leading-body: 1.5;
+  --text-caption: 11px;
+  --leading-caption: 1.2;
+  --tracking-caption: 0.02px;
   --text-subheading: 18px;
-  --leading-subheading: 1.56;
+  --leading-subheading: 1.2;
+  --tracking-subheading: 0.01px;
+  --text-heading-sm: 29px;
+  --leading-heading-sm: 1.1;
+  --tracking-heading-sm: -0.005px;
+  --text-heading: 65px;
+  --leading-heading: 0.95;
+  --tracking-heading: -0.01px;
+  --text-heading-lg: 101px;
+  --leading-heading-lg: 0.9;
+  --tracking-heading-lg: -0.016px;
+  --text-display: 195px;
+  --leading-display: 0.8;
+  --tracking-display: -0.02px;
 
   /* Spacing */
   --spacing-4: 4px;
+  --spacing-6: 6px;
   --spacing-8: 8px;
+  --spacing-9: 9px;
+  --spacing-10: 10px;
   --spacing-12: 12px;
+  --spacing-14: 14px;
+  --spacing-16: 16px;
+  --spacing-17: 17px;
+  --spacing-20: 20px;
   --spacing-24: 24px;
-  --spacing-44: 44px;
+  --spacing-26: 26px;
+  --spacing-28: 28px;
+  --spacing-32: 32px;
+  --spacing-42: 42px;
+  --spacing-192: 192px;
 
   /* Border Radius */
   --radius-md: 6px;
-  --radius-xl: 12px;
-  --radius-full: 9999px;
-
-  /* Shadows */
-  --shadow-subtle: rgb(243, 229, 223) 0px 1px 0px 0px inset;
+  --radius-full: 1080px;
+  --radius-full-2: 1152px;
+  --radius-full-3: 1224px;
+  --radius-full-4: 1296px;
 }
 ```

@@ -1,87 +1,244 @@
 @import "tailwindcss";
 
 @theme {
-    --font-sans: "Courier New", ui-monospace, monospace;
-    --font-arcade: "Courier New", ui-monospace, monospace;
-    --color-arcade-cream: #f3e5df;
-    --color-ink-black: #000000;
-    --color-pixel-gray: #e5e7eb;
-    --color-charcoal: #333333;
-    --color-carbon: #151515;
-    --color-muted-gray: #737373;
-    --color-marquee-orange: #faa21f;
-    --color-buy-green: #128e44;
+    /* Hungry Tiger — Design Tokens */
+    --color-tiger-gold: #faae33;
+    --color-ember-rust: #823513;
+    --color-saffron-glow: #9f531b;
+    --color-dark-spice: #402011;
+    --color-charred-clove: #281006;
+    --color-cardamom-brown: #6b2e12;
+    --color-chili-red: #d1255c;
+
+    --font-salmond: "Bebas Neue", "Antonio", "Impact", ui-sans-serif, system-ui, sans-serif;
+    --font-graphikx: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --font-display: "Bebas Neue", "Antonio", "Impact", ui-sans-serif, system-ui, sans-serif;
+
+    --radius-cards: 6px;
+    --radius-badges: 9999px;
+    --radius-inputs: 9999px;
+    --radius-buttons: 9999px;
 }
 
 /* =========================================
-    DAILY BOOKS DESIGN SYSTEM
+   HUNGRY TIGER / DAILY BOOKS DESIGN SYSTEM
+   Theme: Dark
+   Canvas: Ember Rust (#823513)
+   Accent: Tiger Gold (#faae33)
+   Surfaces: Dark Spice (#402011) & Charred Clove (#281006)
 ========================================= */
 
 html {
     scroll-behavior: smooth;
+    background-color: #823513;
 }
 
 body {
-    background: #f3e5df;
-    color: #000;
-    font-family: var(--font-arcade);
-    font-size: 14px;
-    line-height: 1.5;
+    background-color: #823513;
+    color: #faae33;
+    font-family: var(--font-graphikx);
+    font-size: 13px;
+    line-height: 1.45;
+    -webkit-font-smoothing: antialiased;
 }
 
-h1, h2, h3, h4, button, a, input, textarea, select {
-    font-family: var(--font-arcade);
-}
-
-a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible {
-    outline: 2px solid #faa21f;
-    outline-offset: 2px;
-}
-
-.arcade-shell {
-    border: 1px solid #000;
-    background: #f3e5df;
-}
-
-.arcade-card {
-    border: 1px solid #e5e7eb;
-    border-radius: 12px;
-    background: #f3e5df;
-    padding: 12px;
-}
-
-.arcade-button {
-    border: 1px solid #000;
-    border-radius: 6px;
-    box-shadow: inset 0 1px 0 #f3e5df;
-    padding: 8px 12px;
-    font-size: 14px;
-    line-height: 1.25;
-}
-
-.arcade-button-primary {
-    border-color: #128e44;
-    background: #128e44;
-    color: #fff;
+/* Typographic Poster Hierarchy */
+h1, h2, h3, h4, .font-display, .font-poster {
+    font-family: var(--font-salmond);
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
     font-weight: 700;
 }
 
-.arcade-button-ghost {
-    background: transparent;
-    color: #000;
+/* Dotted Horizontal Dividers (Key signature of 04-DESIGN.md) */
+.tiger-divider, .dotted-divider {
+    border: none;
+    border-top: 1px dotted #faae33;
+    width: 100%;
+    margin: 0;
 }
 
-.arcade-tag {
-    border: 1px solid #000;
+/* Focus States */
+a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible {
+    outline: 2px solid #faae33;
+    outline-offset: 2px;
+}
+
+/* Surfaces & Containers */
+.tiger-shell, .arcade-shell {
+    background-color: #823513;
+    border: 1px solid #6b2e12;
+}
+
+.tiger-card, .arcade-card {
+    background-color: #402011;
+    border: 1px solid #6b2e12;
+    border-radius: 6px;
+    padding: 16px;
+    color: #faae33;
+    transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.tiger-card:hover, .arcade-card:hover {
+    border-color: #faae33;
+}
+
+.tiger-card-deep {
+    background-color: #281006;
+    border: 1px solid #6b2e12;
+    border-radius: 6px;
+    padding: 16px;
+    color: #faae33;
+}
+
+/* Buttons — Pill Shapes (9999px) per 04-DESIGN.md */
+.tiger-button, .arcade-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     border-radius: 9999px;
-    padding: 2px 8px;
-    font-size: 10px;
-    line-height: 1.5;
+    padding: 8px 18px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    text-transform: uppercase;
+    transition: all 0.15s ease-in-out;
+    cursor: pointer;
+    text-decoration: none;
+    white-space: nowrap;
 }
 
-.arcade-checkerboard {
-    background-color: #f3e5df;
-    background-image: linear-gradient(45deg, #000 25%, transparent 25%, transparent 75%, #000 75%), linear-gradient(45deg, #000 25%, transparent 25%, transparent 75%, #000 75%);
-    background-position: 0 0, 24px 24px;
-    background-size: 48px 48px;
+/* Primary Filled Button: Tiger Gold with Charred Clove Text */
+.tiger-button-primary, .arcade-button-primary {
+    background-color: #faae33;
+    color: #281006 !important;
+    border: 1px solid #faae33;
 }
+
+.tiger-button-primary:hover, .arcade-button-primary:hover {
+    background-color: #fdbb54;
+    border-color: #fdbb54;
+    color: #281006 !important;
+}
+
+.tiger-button-primary:disabled, .arcade-button-primary:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    background-color: #6b2e12;
+    border-color: #6b2e12;
+    color: #faae33 !important;
+}
+
+/* Ghost Outline Button: Transparent fill, 1px Tiger Gold border */
+.tiger-button-ghost, .arcade-button-ghost {
+    background-color: transparent;
+    color: #faae33;
+    border: 1px solid #faae33;
+}
+
+.tiger-button-ghost:hover, .arcade-button-ghost:hover {
+    background-color: #402011;
+    color: #faae33;
+}
+
+.tiger-button-ghost:disabled, .arcade-button-ghost:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    border-color: #6b2e12;
+    color: #9f531b;
+}
+
+/* Badges & Tags — Full Pill (9999px) */
+.tiger-tag, .arcade-tag {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 9999px;
+    border: 1px solid #6b2e12;
+    background-color: #281006;
+    color: #faae33;
+    padding: 3px 12px;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1.3;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+}
+
+.tiger-tag-gold {
+    background-color: #faae33;
+    color: #281006;
+    border-color: #faae33;
+}
+
+.tiger-tag-alert {
+    background-color: #d1255c;
+    color: #ffffff;
+    border-color: #d1255c;
+}
+
+/* Inputs, Textareas, Selects */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="tel"],
+input[type="search"],
+select {
+    background-color: #281006;
+    border: 1px solid #6b2e12;
+    border-radius: 9999px;
+    color: #faae33;
+    padding: 10px 18px;
+    font-size: 13px;
+    transition: border-color 0.15s ease;
+}
+
+input::placeholder, textarea::placeholder {
+    color: #faae33;
+    opacity: 0.5;
+}
+
+input:focus, select:focus {
+    border-color: #faae33;
+    outline: none;
+}
+
+textarea {
+    background-color: #281006;
+    border: 1px solid #6b2e12;
+    border-radius: 12px;
+    color: #faae33;
+    padding: 12px 18px;
+    font-size: 13px;
+    transition: border-color 0.15s ease;
+}
+
+textarea:focus {
+    border-color: #faae33;
+    outline: none;
+}
+
+/* Atmospheric Botanical / Spice Texture Overlay */
+.tiger-atmosphere {
+    background-color: #823513;
+    background-image: radial-gradient(#9f531b 0.75px, transparent 0.75px);
+    background-size: 24px 24px;
+}
+
+.tiger-poster-card {
+    background-color: #402011;
+    border: 1px solid #6b2e12;
+    border-radius: 6px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Backward compatibility for any remaining arcade-checkerboard */
+.arcade-checkerboard {
+    background-color: #402011;
+    border: 1px solid #6b2e12;
+    background-image: radial-gradient(#6b2e12 1px, transparent 1px);
+    background-size: 20px 20px;
+}
+
