@@ -16,7 +16,7 @@ class CatalogController extends Controller
                 ->with(['category', 'primaryImage'])
                 ->where('is_active', true)
                 ->latest()
-                ->take(4)
+                ->take(8)
                 ->get(),
             'categories' => Category::query()
                 ->withCount(['products' => fn ($q) => $q->where('is_active', true)])
