@@ -3,22 +3,22 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cart;
-use App\Models\CartItem;
 use App\Models\Product;
-use App\Models\ProductVariant;
+use App\Services\CartService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class CartController extends Controller
 {
+    public function __construct(public CartService $cartService) {}
+
     public function cart(Request $request)
     {
-        $cart = $this->resolveCart($request);
+        $cart = $this->cartService->resolveCart($request);
 
         return view('pages.customer.cart', [
             'cart' => $cart,
             'items' => $cart->items()->with(['productVariant.product.primaryImage'])->get(),
-            'subtotal' => $this->subtotal($cart),
+            'subtotal' => $this->cartService->subtotal($cart),
         ]);
     }
 
@@ -36,29 +36,13 @@ class CartController extends Controller
             ->where('is_active', true)
             ->firstOrFail();
 
-        $variant = ProductVariant::query()
-            ->where('product_id', $product->id)
-            ->where('format', $data['format'] ?? 'paperback')
-            ->where('is_active', true)
-            ->firstOrFail();
+        $cart = $this->cartService->resolveCart($request);
 
-        $cart = $this->resolveCart($request);
-
-        $item = CartItem::query()
-            ->where('cart_id', $cart->id)
-            ->where('product_variant_id', $variant->id)
-            ->first();
-
-        $newQuantity = ($item?->quantity ?? 0) + $data['quantity'];
-
-        if ($variant->availableStock() < $newQuantity) {
-            return back()->withErrors(['quantity' => 'Total quantity melebihi stok yang tersedia ('.$variant->availableStock().').'])->withInput();
+        try {
+            $this->cartService->addItem($cart, $product, $data['format'] ?? 'paperback', $data['quantity']);
+        } catch (\InvalidArgumentException $e) {
+            return back()->withErrors(['quantity' => $e->getMessage()])->withInput();
         }
-
-        CartItem::updateOrCreate(
-            ['cart_id' => $cart->id, 'product_variant_id' => $variant->id],
-            ['quantity' => $newQuantity, 'unit_price' => $variant->price ?? $product->price],
-        );
 
         if ($request->boolean('buy_now')) {
             return to_route('checkout.index');
@@ -74,68 +58,32 @@ class CartController extends Controller
             'format' => ['nullable', 'string', 'in:paperback,hardcover,gift_edition'],
         ]);
 
-        $cart = $this->resolveCart($request);
+        $cart = $this->cartService->resolveCart($request);
 
-        $item = CartItem::query()
-            ->where('cart_id', $cart->id)
-            ->whereHas('productVariant.product', fn ($q) => $q->where('slug', $slug))
-            ->when($data['format'] ?? null, function ($q, $format) {
-                $q->whereHas('productVariant', fn ($vq) => $vq->where('format', $format));
-            })
-            ->firstOrFail();
-
-        if ($item->productVariant->availableStock() < $data['quantity']) {
-            return back()->withErrors(['quantity' => 'Quantity melebihi stok yang tersedia ('.$item->productVariant->availableStock().').'])->withInput();
+        try {
+            $this->cartService->updateItem($cart, $slug, $data['format'] ?? null, $data['quantity']);
+        } catch (\InvalidArgumentException $e) {
+            return back()->withErrors(['quantity' => $e->getMessage()])->withInput();
         }
-
-        $item->update(['quantity' => $data['quantity']]);
 
         return to_route('cart.index');
     }
 
     public function removeFromCart(Request $request, string $slug)
     {
-        $cart = $this->resolveCart($request);
+        $cart = $this->cartService->resolveCart($request);
+        $this->cartService->removeItem($cart, $slug, $request->input('format'));
 
-        CartItem::query()
-            ->where('cart_id', $cart->id)
-            ->whereHas('productVariant.product', fn ($q) => $q->where('slug', $slug))
-            ->each(function (CartItem $item) {
-                $item->delete();
-            });
-
-        return to_route('cart.index')->with('status', 'Item removed from your cart.');
+        return to_route('cart.index')->with('status', 'Item removed from cart.');
     }
 
-    private function resolveCart(Request $request): Cart
+    public function resolveCart(Request $request): Cart
     {
-        if (Auth::check()) {
-            return Cart::firstOrCreate(
-                ['user_id' => Auth::id(), 'status' => 'active'],
-                ['session_id' => $request->session()->getId()],
-            );
-        }
-
-        $cart = Cart::query()
-            ->where('session_id', $request->session()->getId())
-            ->where('status', 'active')
-            ->first();
-
-        if ($cart) {
-            return $cart;
-        }
-
-        return Cart::create([
-            'session_id' => $request->session()->getId(),
-            'status' => 'active',
-        ]);
+        return $this->cartService->resolveCart($request);
     }
 
-    private function subtotal(Cart $cart): int
+    public function subtotal(Cart $cart): int
     {
-        return (int) CartItem::query()
-            ->where('cart_id', $cart->id)
-            ->get()
-            ->sum(fn (CartItem $item) => $item->unit_price * $item->quantity);
+        return $this->cartService->subtotal($cart);
     }
 }

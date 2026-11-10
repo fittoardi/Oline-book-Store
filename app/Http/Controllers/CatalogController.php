@@ -51,7 +51,8 @@ class CatalogController extends Controller
                 $query->where(function ($q) use ($term) {
                     $q->where('name', 'like', '%'.$term.'%')
                         ->orWhere('author', 'like', '%'.$term.'%')
-                        ->orWhere('description', 'like', '%'.$term.'%');
+                        ->orWhere('description', 'like', '%'.$term.'%')
+                        ->orWhereHas('category', fn ($cq) => $cq->where('name', 'like', '%'.$term.'%'));
                 });
             })
             ->when($filters['category'] ?? null, function ($query, $name) {
@@ -183,6 +184,7 @@ class CatalogController extends Controller
             'slug' => ['required', 'string'],
             'rating' => ['required', 'integer', 'min:1', 'max:5'],
             'comment' => ['required', 'string', 'max:1000'],
+            'image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:2048'],
         ]);
 
         $product = Product::where('slug', $data['slug'])->where('is_active', true)->firstOrFail();
@@ -202,12 +204,18 @@ class CatalogController extends Controller
             ->latest()
             ->first();
 
+        $imagePath = null;
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('reviews', 'public');
+        }
+
         Review::create([
             'user_id' => $user->id,
             'product_id' => $product->id,
             'order_id' => $order?->id,
             'rating' => $data['rating'],
             'comment' => $data['comment'],
+            'image' => $imagePath,
             'is_approved' => false,
         ]);
 

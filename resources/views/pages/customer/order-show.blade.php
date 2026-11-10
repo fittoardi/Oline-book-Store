@@ -123,6 +123,15 @@
                 <a href="{{ route('chat.index') }}?order={{ $order->order_number }}" class="tiger-button tiger-button-ghost mt-3 w-full text-center text-xs">
                     Ask about this order
                 </a>
+
+                @if($order->status === 'pending' && $order->payment_status !== 'paid')
+                    <form method="POST" action="{{ route('orders.cancel', $order->order_number) }}" onsubmit="return confirm('Apakah Anda yakin ingin membatalkan pesanan ini?');" class="mt-3">
+                        @csrf
+                        <button type="submit" class="tiger-button-ghost w-full text-center text-xs !text-[#d1255c] !border-[#d1255c] hover:!bg-[#d1255c] hover:!text-white transition-colors">
+                            Cancel order
+                        </button>
+                    </form>
+                @endif
             </aside>
         </div>
     </section>

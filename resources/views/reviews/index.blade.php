@@ -29,6 +29,11 @@
                             <span class="text-sm text-[#faae33]">{{ str_repeat('★', $review->rating) }}</span>
                         </div>
                         <p class="mt-6 text-sm leading-7 text-[#faae33] opacity-90">“{{ $review->comment }}”</p>
+                        @if($review->image)
+                            <div class="mt-4 overflow-hidden rounded-[4px] border border-[#6b2e12] max-w-[140px]">
+                                <img src="{{ asset('storage/'.$review->image) }}" alt="Photo by {{ $review->user->name ?? 'Reader' }}" width="140" height="140" class="h-24 w-full object-cover">
+                            </div>
+                        @endif
                     </div>
                     <p class="mt-8 border-t border-[#6b2e12] pt-4 text-xs font-bold uppercase tracking-wider text-[#9f531b]">{{ $review->product->name ?? '' }}</p>
                 </article>

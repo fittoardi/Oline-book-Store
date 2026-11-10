@@ -20,10 +20,10 @@ Route::get('/categories', [CatalogController::class, 'categories'])->name('categ
 Route::get('/categories/{slug}', [CatalogController::class, 'category'])->name('categories.show');
 Route::view('/about', 'pages.catalog.about')->name('about');
 Route::view('/contact', 'pages.catalog.contact')->name('contact');
-Route::post('/contact', [ContactController::class, 'submitContact'])->name('contact.submit');
+Route::post('/contact', [ContactController::class, 'submitContact'])->middleware('throttle:10,1')->name('contact.submit');
 Route::get('/reviews', [CatalogController::class, 'reviews'])->name('reviews.index');
 Route::get('/chat', [ChatController::class, 'chat'])->name('chat.index');
-Route::post('/chat', [ChatController::class, 'submitChat'])->name('chat.submit');
+Route::post('/chat', [ChatController::class, 'submitChat'])->middleware('throttle:20,1')->name('chat.submit');
 Route::view('/help', 'pages.customer.help')->name('help.index');
 
 // Cart Flow (supporting both /cart and /cart/items paths)
@@ -62,9 +62,13 @@ Route::middleware('auth')->group(function (): void {
     // Orders & Payments
     Route::get('/orders', [OrderController::class, 'orders'])->name('orders.index');
     Route::get('/orders/{number}', [OrderController::class, 'order'])->name('orders.show');
+    Route::post('/orders/{number}/cancel', [OrderController::class, 'cancel'])->name('orders.cancel');
     Route::get('/orders/{number}/payment', [OrderController::class, 'payment'])->name('payments.show');
     Route::post('/orders/{number}/payment/confirm', [OrderController::class, 'confirmPayment'])->name('payments.confirm');
 });
+
+// Payment Webhook (Idempotent gateway callback)
+Route::post('/api/webhook/payment', [OrderController::class, 'webhook'])->name('api.webhook.payment');
 
 // Authentication
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');

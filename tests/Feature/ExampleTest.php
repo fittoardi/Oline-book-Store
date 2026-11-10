@@ -6,6 +6,7 @@ use App\Models\ChatConversation;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Payment;
+use App\Models\PaymentWebhook;
 use App\Models\Product;
 use App\Models\ProductImage;
 use App\Models\ProductVariant;
@@ -13,7 +14,9 @@ use App\Models\Review;
 use App\Models\User;
 use App\Models\Voucher;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 uses(RefreshDatabase::class);
 
@@ -477,4 +480,137 @@ test('the shop page filters books by price range', function () {
     $this->get('/shop?max_price=150000')
         ->assertOk()
         ->assertSee('The Quiet Atlas');
+});
+
+test('a customer can cancel a pending order and stock is restored', function () {
+    seedCatalog();
+
+    $user = User::where('email', 'nadia@example.com')->first();
+    $product = Product::where('slug', 'the-quiet-atlas')->first();
+    $variant = $product->variants->first();
+    $initialStock = $variant->stock;
+
+    $order = Order::create([
+        'user_id' => $user->id,
+        'order_number' => 'KB-TEST-CANCEL-001',
+        'status' => 'pending',
+        'payment_status' => 'pending',
+        'shipping_status' => 'pending',
+        'subtotal' => 149000,
+        'discount_amount' => 0,
+        'shipping_cost' => 15000,
+        'total_amount' => 164000,
+    ]);
+
+    OrderItem::create([
+        'order_id' => $order->id,
+        'product_variant_id' => $variant->id,
+        'product_name' => $product->name,
+        'variant_name' => $variant->format,
+        'sku' => $variant->sku,
+        'quantity' => 2,
+        'unit_price' => 149000,
+        'subtotal' => 298000,
+    ]);
+
+    $this->actingAs($user)
+        ->post("/orders/{$order->order_number}/cancel")
+        ->assertRedirect();
+
+    expect($order->fresh()->status)->toBe('cancelled');
+    expect($variant->fresh()->stock)->toBe($initialStock + 2);
+});
+
+test('payment webhook callback idempotently marks order as paid', function () {
+    seedCatalog();
+
+    $user = User::where('email', 'nadia@example.com')->first();
+    $order = Order::create([
+        'user_id' => $user->id,
+        'order_number' => 'KB-TEST-WEBHOOK-001',
+        'status' => 'pending',
+        'payment_status' => 'pending',
+        'shipping_status' => 'pending',
+        'subtotal' => 149000,
+        'discount_amount' => 0,
+        'shipping_cost' => 15000,
+        'total_amount' => 164000,
+    ]);
+
+    Payment::create([
+        'order_id' => $order->id,
+        'provider' => 'tripay',
+        'reference' => 'T-WEBHOOK-REF-001',
+        'merchant_ref' => 'KB-'.$order->id,
+        'method' => 'Bank transfer',
+        'status' => 'pending',
+        'amount' => 164000,
+    ]);
+
+    $response = $this->postJson('/api/webhook/payment', [
+        'order_number' => $order->order_number,
+        'status' => 'paid',
+        'reference' => 'T-WEBHOOK-REF-001',
+    ]);
+
+    $response->assertOk()->assertJson(['success' => true]);
+    expect($order->fresh()->payment_status)->toBe('paid');
+    expect($order->fresh()->status)->toBe('processing');
+    expect(PaymentWebhook::count())->toBeGreaterThan(0);
+});
+
+test('a customer can submit a review with an optional photo', function () {
+    Storage::fake('public');
+    seedCatalog();
+
+    $product = Product::where('slug', 'the-quiet-atlas')->first();
+    $variant = $product->variants->first();
+
+    $reviewer = User::create([
+        'name' => 'Budi Reader',
+        'email' => 'budi_reader@example.com',
+        'phone' => '081299999999',
+        'role' => 'customer',
+        'password' => Hash::make('password'),
+    ]);
+
+    $order = Order::create([
+        'user_id' => $reviewer->id,
+        'order_number' => 'KB-TEST-REV-001',
+        'status' => 'completed',
+        'payment_status' => 'paid',
+        'shipping_status' => 'delivered',
+        'subtotal' => 149000,
+        'discount_amount' => 0,
+        'shipping_cost' => 15000,
+        'total_amount' => 164000,
+    ]);
+
+    OrderItem::create([
+        'order_id' => $order->id,
+        'product_variant_id' => $variant->id,
+        'product_name' => $product->name,
+        'variant_name' => $variant->format,
+        'sku' => $variant->sku,
+        'quantity' => 1,
+        'unit_price' => 149000,
+        'subtotal' => 149000,
+    ]);
+
+    $file = UploadedFile::fake()->image('reading-desk.jpg', 600, 600);
+
+    $this->actingAs($reviewer)
+        ->post('/reviews', [
+            'slug' => $product->slug,
+            'rating' => 5,
+            'comment' => 'Buku yang luar biasa indah dan membekas.',
+            'image' => $file,
+        ])
+        ->assertRedirect();
+
+    $review = Review::where('user_id', $reviewer->id)->where('product_id', $product->id)->first();
+    expect($review)->not->toBeNull();
+    expect($review->is_approved)->toBeFalse();
+    expect($review->image)->not->toBeNull();
+    Storage::disk('public')->assertExists($review->image);
 });

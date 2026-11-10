@@ -173,7 +173,7 @@
                     <h3 class="mt-2 text-2xl font-bold uppercase text-[#faae33]">Leave a Review</h3>
                     <p class="mt-1 text-xs text-[#faae33] opacity-75">Bagikan pengalaman membaca buku ini kepada komunitas Daily Books.</p>
 
-                    <form method="POST" action="{{ route('reviews.store') }}" class="mt-5 space-y-4">
+                    <form method="POST" action="{{ route('reviews.store') }}" enctype="multipart/form-data" class="mt-5 space-y-4">
                         @csrf
                         <input type="hidden" name="slug" value="{{ $product->slug }}">
 
@@ -191,6 +191,11 @@
                         <div>
                             <label class="block text-xs font-bold uppercase tracking-wider text-[#faae33]" for="comment">Your Review</label>
                             <textarea id="comment" name="comment" rows="4" required class="mt-2 w-full" placeholder="Tuliskan kesan atau pandangan Anda tentang buku ini..."></textarea>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-[#faae33]" for="review-image">Photo (Optional)</label>
+                            <input id="review-image" name="image" type="file" accept="image/jpeg,image/png,image/jpg,image/webp" class="mt-2 w-full text-xs text-[#faae33] file:mr-3 file:rounded-full file:border-0 file:bg-[#faae33] file:px-4 file:py-1.5 file:text-xs file:font-bold file:text-[#281006]">
                         </div>
 
                         <button type="submit" class="tiger-button tiger-button-primary">Submit Review</button>
@@ -211,6 +216,11 @@
                             <span class="text-xs text-[#faae33]">{{ str_repeat('★', $review->rating) }}</span>
                         </div>
                         <p class="mt-3 text-sm leading-6 text-[#faae33] opacity-90">“{{ $review->comment }}”</p>
+                        @if($review->image)
+                            <div class="mt-3 overflow-hidden rounded-[4px] border border-[#6b2e12] max-w-[120px]">
+                                <img src="{{ asset('storage/'.$review->image) }}" alt="Photo by {{ $review->user->name ?? 'Reader' }}" width="120" height="120" class="h-20 w-full object-cover">
+                            </div>
+                        @endif
                         <p class="mt-4 border-t border-[#6b2e12] pt-2 text-[10px] uppercase tracking-wider text-[#9f531b]">Verified reader · {{ $review->created_at->format('d M Y') }}</p>
                     </article>
                 @empty
